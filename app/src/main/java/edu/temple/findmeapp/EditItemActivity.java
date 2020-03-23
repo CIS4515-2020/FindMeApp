@@ -5,14 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-public class MainActivity extends AppCompatActivity {
-    private final static String TAG = "MainActivity ===>>>";
+public class EditItemActivity extends AppCompatActivity {
+    private final static String TAG = "EditItemActivity ===>>>";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_edit_item);
     }
-
 }
