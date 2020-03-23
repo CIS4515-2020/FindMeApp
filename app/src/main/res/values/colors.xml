@@ -3,4 +3,13 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="flamingo">#ff8e8a</color>
+    <color name="neonGreen">#4aff80</color>
+    <color name="darkGreen">#00b515</color>
+    <color name="violet">#a857ff</color>
+    <color name="sunflower">#ffd500</color>
+    <color name="turquoise">#57d2ff</color>
+    <color name="white">#ffffff</color>
+    <color name="orange">#e68e00</color>
 </resources>
