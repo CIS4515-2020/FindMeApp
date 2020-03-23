@@ -50,7 +50,7 @@
             android:textSize="24sp"
             android:textColor="@color/white"/>
         <Button
-            android:id="@+id/button_item_list"
+            android:id="@+id/button_item_display"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
