@@ -11,10 +11,13 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "MainActivity ===>>>";
 
-    Button buttonNewItemActivity;
-    Button buttonEditItemActivity;
-    Button buttonDeleteItemActivity;
-    Button buttonItemDisplayActivity;
+    private Button buttonNewItemActivity;
+    private Button buttonEditItemActivity;
+    private Button buttonDeleteItemActivity;
+    private Button buttonItemDisplayActivity;
+
+    private Button buttonLogin;
+    private Button buttonRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,29 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLoginDialog();
+            }
+        });
+
+        buttonRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRegisterDialog();
+            }
+        });
+
+    }
+
+    private void showLoginDialog() {
+
+    }
+
+    private void showRegisterDialog() {
+
     }
 
 

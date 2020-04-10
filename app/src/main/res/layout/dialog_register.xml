@@ -15,7 +15,7 @@
         android:textStyle="bold"/>
 
     <EditText
-        android:id="@+id/registerUsername"
+        android:id="@+id/registerDialogUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -24,7 +24,7 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/registerEmail"
+        android:id="@+id/registerDialogEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -33,7 +33,7 @@
         android:inputType="textEmailAddress" />
 
     <EditText
-        android:id="@+id/registerPassword"
+        android:id="@+id/registerDialogPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -42,7 +42,7 @@
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/registerButton"
+        android:id="@+id/registerDialogButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
