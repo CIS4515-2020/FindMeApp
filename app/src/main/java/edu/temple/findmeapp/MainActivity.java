@@ -13,9 +13,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
+import com.android.volley.VolleyError;
 
-public class MainActivity extends AppCompatActivity {
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+public class MainActivity extends AppCompatActivity implements DatabaseInterface.DbResponseListener {
     private final static String TAG = "MainActivity ===>>>";
 
     private Button buttonNewItemActivity;
@@ -109,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         View view = getLayoutInflater().inflate(R.layout.dialog_login, null);
 
         final EditText editTextLoginUsername = view.findViewById(R.id.loginDialogUsername);
-        EditText editTextLoginPassword = view.findViewById(R.id.loginDialogPassword);
+        final EditText editTextLoginPassword = view.findViewById(R.id.loginDialogPassword);
         Button   buttonLoginDialog     = view.findViewById(R.id.loginDialogButton);
 
         buttonLoginDialog.setOnClickListener(new View.OnClickListener() {
@@ -118,9 +125,15 @@ public class MainActivity extends AppCompatActivity {
                 // TODO send login request to server
                 String editTextLoginUsernameText = editTextLoginUsername.getText().toString();
                 if (editTextLoginUsernameText.length() == 0) {
-                    Toast.makeText(getApplicationContext(), "New name cannot be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Username cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }else if (editTextLoginPassword.getText().toString().length() == 0) {
+                    Toast.makeText(getApplicationContext(), "Password cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                DatabaseInterface dbInterface = new DatabaseInterface( MainActivity.this );
+                dbInterface.login( editTextLoginUsernameText, editTextLoginPassword.getText().toString() );
                 SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(SHARED_PREFS_USERNAME, editTextLoginUsernameText);
@@ -160,5 +173,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void response(JSONArray data) {
+        try {
+            String username = data.getJSONObject(0).getString("username");
+            Toast.makeText(getApplicationContext(), "Hello " + username , Toast.LENGTH_LONG).show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Override
+    public void errorResponse(String error) {
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+    }
 }

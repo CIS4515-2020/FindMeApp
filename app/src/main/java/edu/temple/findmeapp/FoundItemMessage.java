@@ -1,19 +1,33 @@
 package edu.temple.findmeapp;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class FoundItemMessage {
-    private int lat;
-    private int lon;
-    private int foundOn; // Timestamp found
+    private int id;
+    private double lat;
+    private double lon;
+    private String foundOn; // Timestamp found
     private String message;
 
-    public FoundItemMessage(int lat, int lon, int foundOn, String message) {
+    public FoundItemMessage(double lat, double lon, String foundOn, String message) {
         this.lat = lat;
         this.lon = lon;
         this.foundOn = foundOn;
         this.message = message;
     }
 
-    public int getLat() {
+    public FoundItemMessage(JSONObject args) throws JSONException {
+        this.id = args.getInt("found_item_id");
+        this.lat = args.getDouble("lat");
+        this.lon = args.getDouble("lng");
+        this.message = args.getString("message");
+        this.foundOn = args.getString("found_on");
+    }
+
+    public int getId(){ return id; }
+
+    public double getLat() {
         return lat;
     }
 
@@ -21,7 +35,7 @@ public class FoundItemMessage {
         this.lat = lat;
     }
 
-    public int getLon() {
+    public double getLon() {
         return lon;
     }
 
@@ -29,11 +43,11 @@ public class FoundItemMessage {
         this.lon = lon;
     }
 
-    public int getFoundOn() {
+    public String getFoundOn() {
         return foundOn;
     }
 
-    public void setFoundOn(int foundOn) {
+    public void setFoundOn(String foundOn) {
         this.foundOn = foundOn;
     }
 
