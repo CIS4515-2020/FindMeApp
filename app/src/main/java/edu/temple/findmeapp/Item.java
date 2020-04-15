@@ -6,20 +6,20 @@ public class Item {
     private int id;
     private String name;
     private String description;
-    private ArrayList<FoundItemMessage> foundItemMessages;
+    private ArrayList<FoundItemMessage> foundItemMessageList;
 
     public Item(int id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.foundItemMessages = new ArrayList<FoundItemMessage>();
+        this.foundItemMessageList = new ArrayList<FoundItemMessage>();
     }
 
-    public Item(int id, String name, String description, ArrayList<FoundItemMessage> foundItemMessages) {
+    public Item(int id, String name, String description, ArrayList<FoundItemMessage> foundItemMessageList) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.foundItemMessages = foundItemMessages;
+        this.foundItemMessageList = foundItemMessageList;
     }
 
     public int getId() {
@@ -46,19 +46,19 @@ public class Item {
         this.description = description;
     }
 
-    public ArrayList<FoundItemMessage> getFoundItemMessages() {
-        return foundItemMessages;
+    public ArrayList<FoundItemMessage> getFoundItemMessageList() {
+        return foundItemMessageList;
     }
 
-    public void setFoundItemMessages(ArrayList<FoundItemMessage> foundItemMessages) {
-        this.foundItemMessages = foundItemMessages;
+    public void setFoundItemMessageList(ArrayList<FoundItemMessage> foundItemMessageList) {
+        this.foundItemMessageList = foundItemMessageList;
     }
 
     public void addFoundItemMessage(FoundItemMessage foundItemMessage) {
-        this.foundItemMessages.add(foundItemMessage);
+        this.foundItemMessageList.add(foundItemMessage);
     }
 
-    public void clearFoundItemMessages() {
-        this.foundItemMessages.clear();
+    public void clearFoundItemMessageList() {
+        this.foundItemMessageList.clear();
     }
 }
