@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
 
     private Button      buttonLogin;
     private Button      buttonRegister;
+    private ProgressBar loginProgressBar;
+    private Button buttonLoginDialog;
     private AlertDialog dialogLogin;
     private AlertDialog dialogRegister;
     private Boolean     loggedIn;
@@ -117,7 +120,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
 
         final EditText editTextLoginUsername = view.findViewById(R.id.loginDialogUsername);
         final EditText editTextLoginPassword = view.findViewById(R.id.loginDialogPassword);
-        Button   buttonLoginDialog     = view.findViewById(R.id.loginDialogButton);
+        loginProgressBar = view.findViewById(R.id.loginProgressBar);
+        buttonLoginDialog     = view.findViewById(R.id.loginDialogButton);
 
         buttonLoginDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,16 +136,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                     return;
                 }
 
+                buttonLoginDialog.setVisibility(View.GONE);
+                loginProgressBar.setVisibility(View.VISIBLE);
+
                 DatabaseInterface dbInterface = new DatabaseInterface( MainActivity.this );
                 dbInterface.login( editTextLoginUsernameText, editTextLoginPassword.getText().toString() );
-                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(SHARED_PREFS_USERNAME, editTextLoginUsernameText);
-                editor.commit();
-                username = editTextLoginUsernameText;
-                loggedIn = true;
-                getSupportActionBar().setTitle("Find Me - " +username);
-                dialogLogin.cancel();
             }
         });
 
@@ -176,8 +175,17 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
     @Override
     public void response(JSONArray data) {
         try {
+            loginProgressBar.setVisibility(View.GONE);
+            buttonLoginDialog.setVisibility(View.VISIBLE);
             User user = new User( data.getJSONObject(0) );
             Toast.makeText(getApplicationContext(), "Hello " + user.getUsername() , Toast.LENGTH_LONG).show();
+            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(SHARED_PREFS_USERNAME, user.getUsername());
+            editor.commit();
+            loggedIn = true;
+            getSupportActionBar().setTitle("Find Me - " + user.getUsername());
+            dialogLogin.cancel();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -185,6 +193,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
 
     @Override
     public void errorResponse(String error) {
+        loginProgressBar.setVisibility(View.GONE);
+        buttonLoginDialog.setVisibility(View.VISIBLE);
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
     }
 }
