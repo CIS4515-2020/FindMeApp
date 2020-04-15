@@ -176,8 +176,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
     @Override
     public void response(JSONArray data) {
         try {
-            String username = data.getJSONObject(0).getString("username");
-            Toast.makeText(getApplicationContext(), "Hello " + username , Toast.LENGTH_LONG).show();
+            User user = new User( data.getJSONObject(0) );
+            Toast.makeText(getApplicationContext(), "Hello " + user.getUsername() , Toast.LENGTH_LONG).show();
         } catch (JSONException e) {
             e.printStackTrace();
         }
