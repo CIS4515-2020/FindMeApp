@@ -44,6 +44,7 @@ public class ItemDisplayActivity extends AppCompatActivity implements DatabaseIn
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_display);
+        getSupportActionBar().setTitle("Item List");
 
         recyclerView = findViewById(R.id.recyclerview_item_display);
         layoutManager = new LinearLayoutManager(this);

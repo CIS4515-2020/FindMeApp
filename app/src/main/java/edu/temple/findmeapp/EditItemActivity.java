@@ -18,6 +18,7 @@ public class EditItemActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
+        getSupportActionBar().setTitle("Edit Item");
 
         // sample item list
         Item item1 = new Item(1, "item1", "My first item");
