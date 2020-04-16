@@ -13,5 +13,6 @@ public class DeleteItemActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delete_item);
+        getSupportActionBar().setTitle("Delete Item");
     }
 }

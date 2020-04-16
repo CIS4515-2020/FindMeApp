@@ -13,5 +13,6 @@ public class NewItemActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
+        getSupportActionBar().setTitle("New Item");
     }
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="3dp"
+    android:layout_marginBottom="3dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="3dp">
+
+        <ImageView
+            android:id="@+id/founditemlist_imageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="2dp" />
+
+        <TextView
+            android:id="@+id/founditemlist_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/founditemlist_imageView" />
+
+        <TextView
+            android:id="@+id/founditemlist_foundOn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time found: "
+            android:textSize="12sp"
+            android:textColor="@color/even_darker_gray"
+            android:layout_below="@+id/founditemlist_description"
+            android:layout_toEndOf="@id/founditemlist_imageView" />
+
+        <TextView
+            android:id="@+id/founditemlist_lat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Latitude: "
+            android:textSize="12sp"
+            android:textColor="@color/even_darker_gray"
+            android:layout_below="@+id/founditemlist_foundOn"
+            android:layout_toEndOf="@id/founditemlist_imageView" />
+
+        <TextView
+            android:id="@+id/founditemlist_lon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Longitude: "
+            android:textSize="12sp"
+            android:textColor="@color/even_darker_gray"
+            android:layout_below="@+id/founditemlist_lat"
+            android:layout_toEndOf="@id/founditemlist_imageView" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
