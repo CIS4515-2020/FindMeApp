@@ -7,7 +7,7 @@
     tools:context=".ItemDisplayActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/recyclerview_item_display"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="4dp"

@@ -10,14 +10,13 @@ public class Item {
     private int userId;
     private String name;
     private String description;
-    private Boolean lost = false;
-    private ArrayList<FoundItemMessage> foundItemMessages;
+    private int lost = 0;
+    private ArrayList<FoundItemMessage> foundItemMessages = new ArrayList<>();
 
     public Item(int id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.foundItemMessages = new ArrayList<FoundItemMessage>();
     }
 
     public Item(int id, String name, String description, ArrayList<FoundItemMessage> foundItemMessages) {
@@ -27,12 +26,16 @@ public class Item {
         this.foundItemMessages = foundItemMessages;
     }
 
+    public Item clone() {
+        return new Item(id, name, description, foundItemMessages);
+    }
+
     public Item(JSONObject args) throws JSONException {
         this.id = args.getInt("item_id");
         this.userId = args.getInt("user_id");
         this.name = args.getString("name");
         this.description = args.getString("description");
-        this.lost = args.getBoolean("lost");
+        this.lost = args.getInt("lost");
     }
 
     public int getId() {
@@ -41,9 +44,9 @@ public class Item {
 
     public int getUserId(){ return userId; }
 
-    public boolean isLost(){ return lost; }
+    public boolean isLost(){ return lost == 1; }
 
-    public void setLost( boolean lost ){
+    public void setLost( int lost ){
         this.lost = lost;
     }
 

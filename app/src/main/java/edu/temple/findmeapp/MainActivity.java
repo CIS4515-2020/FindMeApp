@@ -43,8 +43,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
 
     private String username;
 
-    private final static String SHARED_PREFS          = "sharedPrefs";
-    private final static String SHARED_PREFS_USERNAME = "sharedPrefsUsername";
+    protected final static String SHARED_PREFS          = "sharedPrefs";
+    protected final static String SHARED_PREFS_USERNAME = "sharedPrefsUsername";
+    protected final static String SHARED_PREFS_USERID = "sharedPrefsUserId";
 
     private String dbcall;
     private DatabaseInterface dbInterface;
@@ -220,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                 SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(SHARED_PREFS_USERNAME, user.getUsername());
+                editor.putInt(SHARED_PREFS_USERID, user.getId());
                 editor.commit();
                 loggedIn = true;
                 getSupportActionBar().setTitle("Find Me - " + user.getUsername());
@@ -233,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                 SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(SHARED_PREFS_USERNAME, user.getUsername());
+                editor.putInt(SHARED_PREFS_USERID, user.getId());
                 editor.commit();
                 loggedIn = true;
                 getSupportActionBar().setTitle("Find Me - " + user.getUsername());
