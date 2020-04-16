@@ -22,7 +22,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ItemDisplayActivity extends AppCompatActivity implements DatabaseInterface.DbResponseListener, ItemListAdapter.ItemClickListener {
+public class ItemDisplayActivity extends AppCompatActivity implements
+        DatabaseInterface.DbResponseListener,
+        ItemListAdapter.ItemClickListener,
+        FoundItemMessageListAdapter.ItemClickListener{
     private final static String TAG = "ItemDisplayActivity ===>>>";
 
     private RecyclerView recyclerView;
@@ -90,7 +93,7 @@ public class ItemDisplayActivity extends AppCompatActivity implements DatabaseIn
         } else if (dbcall.equals("editItem")) {
             finish();
             startActivity(getIntent());
-        } else if (dbcall.equals("getFoundItems")) {
+        } else if (dbcall.equals("getFoundItemMessages")) {
             messageList.clear();
             for (int i = 0; i < data.length(); i++) {
                 try {
@@ -115,6 +118,9 @@ public class ItemDisplayActivity extends AppCompatActivity implements DatabaseIn
     @Override
     public void errorResponse(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+        if (dbcall.equals("getFoundItemMessages")) {
+            foundDialog.cancel();
+        }
     }
 
     @Override
@@ -184,5 +190,9 @@ public class ItemDisplayActivity extends AppCompatActivity implements DatabaseIn
         builder.setView(view);
         lostDialog = builder.create();
         lostDialog.show();
+    }
+
+    public void onMessageClick(FoundItemMessage message) {
+        Log.d(TAG, "onMessageClick");
     }
 }
