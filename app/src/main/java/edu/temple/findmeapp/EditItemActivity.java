@@ -23,12 +23,12 @@ public class EditItemActivity extends AppCompatActivity {
         Item item1 = new Item(1, "item1", "My first item");
         Item item2 = new Item(2, "item2", "My second item",
                 new ArrayList<FoundItemMessage>(Arrays.asList(
-                        new FoundItemMessage(10, 10, 12345, "i found the second item"),
-                        new FoundItemMessage(11, 11, 23456, "i also found the second item")
+                        new FoundItemMessage(10.0, 10.0, "12345", "i found the second item"),
+                        new FoundItemMessage(11.0, 11.0, "23456", "i also found the second item")
                 )));
         Item item3 = new Item(3, "item3", "my third item",
                 new ArrayList<FoundItemMessage>(Arrays.asList(
-                        new FoundItemMessage(15, 15, 34567, "I found the third item!")
+                        new FoundItemMessage(15.0, 15.0, "34567", "I found the third item!")
                 )));
         itemList = new ArrayList<Item>(Arrays.asList(item1, item2, item3));
 

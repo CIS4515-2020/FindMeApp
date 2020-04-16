@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DatabaseInterface {
-
+    private static final String TAG = "DatabaseInterface ===>>>";
     private static final String API_DOMAIN = "https://findmeapp.tech";
     static final String LOGIN_EXT = "/login";
-    static final String REGISTER_EXT = "/register";
+    static final String REGISTER_EXT = "/register-user";
     static final String ITEM_EXT = "/item";
     static final String FOUND_ITEM_MESSAGE_EXT = "/found-item";
     static final String ADD_ACTION = "/add";
@@ -243,6 +243,7 @@ public class DatabaseInterface {
      * @param response
      */
     private void parseResponse(String response){
+        System.out.println(">>> response: " + response);
         JSONObject result = null;
         try {
             result = new JSONObject(response);

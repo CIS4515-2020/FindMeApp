@@ -34,7 +34,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
     private Button      buttonLogin;
     private Button      buttonRegister;
     private ProgressBar loginProgressBar;
+    private ProgressBar registerProgressBar;
     private Button buttonLoginDialog;
+    private Button buttonRegisterDialog;
     private AlertDialog dialogLogin;
     private AlertDialog dialogRegister;
     private Boolean     loggedIn;
@@ -44,12 +46,16 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
     private final static String SHARED_PREFS          = "sharedPrefs";
     private final static String SHARED_PREFS_USERNAME = "sharedPrefsUsername";
 
+    private String dbcall;
+    private DatabaseInterface dbInterface;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbInterface = new DatabaseInterface( MainActivity.this );
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         username = sharedPreferences.getString(SHARED_PREFS_USERNAME, "");
         if (username.equals("")) {
@@ -139,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                 buttonLoginDialog.setVisibility(View.GONE);
                 loginProgressBar.setVisibility(View.VISIBLE);
 
-                DatabaseInterface dbInterface = new DatabaseInterface( MainActivity.this );
+                dbcall = "login";
                 dbInterface.login( editTextLoginUsernameText, editTextLoginPassword.getText().toString() );
             }
         });
@@ -153,16 +159,46 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_register, null);
 
-        EditText editTextRegisterUsername = view.findViewById(R.id.registerDialogUsername);
-        EditText editTextRegisterEmail    = view.findViewById(R.id.registerDialogEmail);
-        EditText editTextRegisterPassword = view.findViewById(R.id.registerDialogPassword);
-        Button   buttonRegisterDialog     = view.findViewById(R.id.registerDialogButton);
+        final EditText editTextRegisterUsername = view.findViewById(R.id.registerDialogUsername);
+        final EditText editTextRegisterEmail    = view.findViewById(R.id.registerDialogEmail);
+        final EditText editTextRegisterPassword = view.findViewById(R.id.registerDialogPassword);
+        final EditText editTextRegisterFirstName = view.findViewById(R.id.registerDialogFirstName);
+        final EditText editTextRegisterLastName = view.findViewById(R.id.registerDialogLastName);
+        buttonRegisterDialog     = view.findViewById(R.id.registerDialogButton);
+        registerProgressBar = view.findViewById(R.id.registerProgressBar);
 
         buttonRegisterDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO send registration request to server
-                dialogRegister.cancel();
+                if (editTextRegisterUsername.getText().toString().length() == 0) {
+                    Toast.makeText(getApplicationContext(), "Username cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (editTextRegisterPassword.getText().toString().length() == 0) {
+                    Toast.makeText(getApplicationContext(), "Password cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (editTextRegisterEmail.getText().toString().length() == 0) {
+                    Toast.makeText(getApplicationContext(), "Email cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (editTextRegisterFirstName.getText().toString().length() == 0) {
+                    Toast.makeText(getApplicationContext(), "First name cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (editTextRegisterLastName.getText().toString().length() == 0) {
+                    Toast.makeText(getApplicationContext(), "Last name cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                buttonRegisterDialog.setVisibility(View.GONE);
+                registerProgressBar.setVisibility(View.VISIBLE);
+
+                dbcall = "register";
+                dbInterface.registerUser(
+                        editTextRegisterUsername.getText().toString(),
+                        editTextRegisterPassword.getText().toString(),
+                        editTextRegisterEmail.getText().toString(),
+                        editTextRegisterFirstName.getText().toString(),
+                        editTextRegisterLastName.getText().toString()
+
+                );
             }
         });
 
@@ -175,17 +211,33 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
     @Override
     public void response(JSONArray data) {
         try {
-            loginProgressBar.setVisibility(View.GONE);
-            buttonLoginDialog.setVisibility(View.VISIBLE);
-            User user = new User( data.getJSONObject(0) );
-            Toast.makeText(getApplicationContext(), "Hello " + user.getUsername() , Toast.LENGTH_LONG).show();
-            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(SHARED_PREFS_USERNAME, user.getUsername());
-            editor.commit();
-            loggedIn = true;
-            getSupportActionBar().setTitle("Find Me - " + user.getUsername());
-            dialogLogin.cancel();
+            if (dbcall.equals("login")) {
+                dbcall = null;
+                loginProgressBar.setVisibility(View.GONE);
+                buttonLoginDialog.setVisibility(View.VISIBLE);
+                User user = new User(data.getJSONObject(0));
+                Toast.makeText(getApplicationContext(), "Hello " + user.getUsername(), Toast.LENGTH_LONG).show();
+                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(SHARED_PREFS_USERNAME, user.getUsername());
+                editor.commit();
+                loggedIn = true;
+                getSupportActionBar().setTitle("Find Me - " + user.getUsername());
+                dialogLogin.cancel();
+            } else if (dbcall.equals("register")){
+                dbcall = null;
+                registerProgressBar.setVisibility(View.GONE);
+                buttonRegisterDialog.setVisibility(View.VISIBLE);
+                User user = new User(data.getJSONObject(0));
+                Toast.makeText(getApplicationContext(), "Welcome " +user.getUsername(), Toast.LENGTH_LONG).show();
+                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(SHARED_PREFS_USERNAME, user.getUsername());
+                editor.commit();
+                loggedIn = true;
+                getSupportActionBar().setTitle("Find Me - " + user.getUsername());
+                dialogRegister.cancel();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -193,8 +245,19 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
 
     @Override
     public void errorResponse(String error) {
-        loginProgressBar.setVisibility(View.GONE);
-        buttonLoginDialog.setVisibility(View.VISIBLE);
+        if (dbcall.equals("login")) {
+            loginProgressBar.setVisibility(View.GONE);
+            buttonLoginDialog.setVisibility(View.VISIBLE);
+        } else if (dbcall.equals("register")) {
+            registerProgressBar.setVisibility(View.GONE);
+            buttonRegisterDialog.setVisibility(View.VISIBLE);
+        }
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbInterface = null;
     }
 }
