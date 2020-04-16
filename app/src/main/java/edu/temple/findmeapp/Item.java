@@ -1,9 +1,13 @@
 package edu.temple.findmeapp;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Item {
     private int id;
+    private int userId;
     private String name;
     private String description;
     private Boolean lost = false;
@@ -23,8 +27,24 @@ public class Item {
         this.foundItemMessages = foundItemMessages;
     }
 
+    public Item(JSONObject args) throws JSONException {
+        this.id = args.getInt("item_id");
+        this.userId = args.getInt("user_id");
+        this.name = args.getString("name");
+        this.description = args.getString("description");
+        this.lost = args.getBoolean("lost");
+    }
+
     public int getId() {
         return id;
+    }
+
+    public int getUserId(){ return userId; }
+
+    public boolean isLost(){ return lost; }
+
+    public void setLost( boolean lost ){
+        this.lost = lost;
     }
 
     public void setId(int id) {
