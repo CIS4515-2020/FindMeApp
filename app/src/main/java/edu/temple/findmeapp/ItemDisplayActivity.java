@@ -39,6 +39,8 @@ public class ItemDisplayActivity extends AppCompatActivity implements DatabaseIn
     private Button lostDialogButton;
     private ProgressBar lostDialogProgressBar;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
