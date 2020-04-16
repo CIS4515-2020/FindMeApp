@@ -30,16 +30,23 @@ public class ItemDisplayActivity extends AppCompatActivity implements DatabaseIn
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<Item> itemList = new ArrayList<>();
 
-    private DatabaseInterface dbInterface;
-    private int userId;
-    private String dbcall;
-
     private AlertDialog lostDialog;
     private TextView lostDialogTextView;
     private Button lostDialogButton;
     private ProgressBar lostDialogProgressBar;
 
+    private AlertDialog foundDialog;
+    private TextView foundDialogTextView;
+    private RecyclerView dialogRecyclerView;
+    private FoundItemMessageListAdapter dialogAdapter;
+    private RecyclerView.LayoutManager dialogLayoutManager;
+    private ArrayList<FoundItemMessage> messageList = new ArrayList<>();
+    private Button foundDialogButton;
+    private ProgressBar foundDialogProgressBar;
 
+    private DatabaseInterface dbInterface;
+    private int userId;
+    private String dbcall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +90,25 @@ public class ItemDisplayActivity extends AppCompatActivity implements DatabaseIn
         } else if (dbcall.equals("editItem")) {
             finish();
             startActivity(getIntent());
+        } else if (dbcall.equals("getFoundItems")) {
+            messageList.clear();
+            for (int i = 0; i < data.length(); i++) {
+                try {
+                    messageList.add(new FoundItemMessage(data.getJSONObject(i)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (messageList.size() == 0) {
+                foundDialog.cancel();
+                Toast.makeText(this, "No messages", Toast.LENGTH_SHORT).show();
+            } else {
+                foundDialogTextView.setText("Messages: " +String.valueOf(messageList.size()));
+                foundDialogProgressBar.setVisibility(View.GONE);
+                foundDialogButton.setVisibility(View.VISIBLE);
+                dialogAdapter.foundItemMessageList = messageList;
+                dialogAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -93,7 +119,34 @@ public class ItemDisplayActivity extends AppCompatActivity implements DatabaseIn
 
     @Override
     public void onItemClick(Item item) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_founditemmessagelist, null);
 
+        foundDialogTextView = view.findViewById(R.id.foundDialogTextView);
+        dialogRecyclerView = view.findViewById(R.id.foundDialogRecyclerView);
+        dialogLayoutManager = new LinearLayoutManager(this);
+        dialogAdapter = new FoundItemMessageListAdapter(this, messageList);
+        dialogRecyclerView.setLayoutManager(dialogLayoutManager);
+        dialogRecyclerView.setAdapter(dialogAdapter);
+        foundDialogButton = view.findViewById(R.id.foundDialogButton);
+        foundDialogProgressBar = view.findViewById(R.id.foundDialogProgressBar);
+
+        foundDialogButton.setVisibility(View.GONE);
+        foundDialogProgressBar.setVisibility(View.VISIBLE);
+
+        foundDialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                foundDialog.cancel();
+            }
+        });
+
+        builder.setView(view);
+        foundDialog = builder.create();
+        foundDialog.show();
+
+        dbcall = "getFoundItemMessages";
+        dbInterface.getFoundItemMessages(item);
     }
 
     @Override
