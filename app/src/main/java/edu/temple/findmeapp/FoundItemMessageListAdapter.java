@@ -52,12 +52,19 @@ public class FoundItemMessageListAdapter extends RecyclerView.Adapter<FoundItemM
     @Override
     public void onBindViewHolder(@NonNull FoundItemMessageListAdapter.ItemViewHolder holder, int position) {
         final FoundItemMessage currentItem = foundItemMessageList.get(position);
-
+        if (currentItem.getMessage() == null || currentItem.getMessage().length() == 0) {
+            currentItem.setMessage("No description");
+        }
         holder.imageView.setImageResource(R.drawable.ic_message);
         holder.tvDescription.setText(currentItem.getMessage());
         holder.tvFoundOn.setText("Time found: " + currentItem.getFoundOn());
-        holder.tvLat.setText("Latitude: " +String.valueOf(currentItem.getLat()));
-        holder.tvLon.setText("Longitude: " + String.valueOf(currentItem.getLon()));
+        if (currentItem.getLat() != 0.0 && currentItem.getLon() != 0.0) {
+            holder.tvLat.setText("Latitude: " +String.valueOf(currentItem.getLat()));
+            holder.tvLon.setText("Longitude: " + String.valueOf(currentItem.getLon()));
+        } else {
+            holder.tvLat.setVisibility(View.GONE);
+            holder.tvLon.setVisibility(View.GONE);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
