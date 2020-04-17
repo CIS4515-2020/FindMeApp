@@ -19,8 +19,13 @@ public class FoundItemMessage {
 
     public FoundItemMessage(JSONObject args) throws JSONException {
         this.id = args.getInt("found_item_id");
-        this.lat = args.getDouble("lat");
-        this.lon = args.getDouble("lng");
+        try {
+            this.lat = args.getDouble("lat");
+            this.lon = args.getDouble("lng");
+        } catch (Exception e) {
+            this.lat = 0.0;
+            this.lon = 0.0;
+        }
         this.message = args.getString("message");
         this.foundOn = args.getString("found_on");
     }

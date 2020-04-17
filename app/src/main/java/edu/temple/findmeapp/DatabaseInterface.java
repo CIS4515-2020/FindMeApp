@@ -138,7 +138,7 @@ public class DatabaseInterface {
     public void getFoundItemMessages( Item item ){
         Map<String, String> params = new HashMap<>();
         params.put("item_id", String.valueOf(item.getId()));
-        String url = API_DOMAIN + FOUND_ITEM_MESSAGE_EXT + DELETE_ACTION;
+        String url = API_DOMAIN + FOUND_ITEM_MESSAGE_EXT + LIST_ACTION;
         this.makeVolleyRequest( url, params );
     }
 
