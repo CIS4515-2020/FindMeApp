@@ -6,13 +6,14 @@
     android:padding="5dp">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/readHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="@string/readDialogHeader" />
 
     <TextView
+        android:id="@+id/readBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
