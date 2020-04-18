@@ -31,6 +31,7 @@ public class DatabaseInterface {
     static final String EDIT_ACTION = "/edit";
     static final String DELETE_ACTION = "/delete";
     static final String LIST_ACTION = "/list";
+    static final String ID_ACTION = "/getid";
 
     private final String SUCCESS = "success";
     private final String FAILED = "failed";
@@ -88,14 +89,25 @@ public class DatabaseInterface {
     }
 
     /**
+     * get item id to use for new item
+     *
+     */
+    public void getNewItemId(){
+        Map<String, String> params = new HashMap<>();
+        String url = API_DOMAIN + ITEM_EXT + ID_ACTION;
+        this.makeVolleyRequest( url, params );
+    }
+
+    /**
      * make add item api call
      *
      * @param user_id UserId of item owner
      * @param name Name of item
      * @param description item desc
      */
-    public void addItem( Integer user_id, String name, String description ){
+    public void addItem( Integer item_id, Integer user_id, String name, String description ){
         Map<String, String> params = new HashMap<>();
+        params.put("item_id", String.valueOf(item_id));
         params.put("user_id", String.valueOf(user_id));
         params.put("name", name);
         params.put("description", description);
