@@ -9,4 +9,24 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+
+    <string name="readDialogHeader">Reading NFC tag</string>
+    <string name="readDialogBody">Place tag near back of phone to start reading.</string>
+    <string name="writeDialogHeader">Write URL to tag...</string>
+    <string name="writeDialogBody">Place tag near back of phone to start writing.</string>
+    <!-- TODO: Reincorporate string resources into DBInterface and other use cases-->
+
+<!--    <string name="TAG">DatabaseInterface ===>>></string>-->
+<!--    <string name="API_DOMAIN">https://findmeapp.tech</string>-->
+<!--    <string name="LOGIN_EXT">/login</string>-->
+<!--    <string name="REGISTER_EXT">/register-user</string>-->
+<!--    <string name="ITEM_EXT">/item</string>-->
+<!--    <string name="FOUND_ITEM_MESSAGE_EXT">/found-item</string>-->
+<!--    <string name="ADD_ACTION">/add</string>-->
+<!--    <string name="EDIT_ACTION">/edit</string>-->
+<!--    <string name="DELETE_ACTION">/delete</string>-->
+<!--    <string name="LIST_ACTION">/list</string>-->
+
+<!--    <string name="SUCCESS">success</string>-->
+<!--    <string name="FAILED">failed</string>-->
 </resources>
