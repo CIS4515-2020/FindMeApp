@@ -4,6 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/darkGreen"
     tools:context=".NewItemActivity">
 
+    <EditText
+        android:id="@+id/newNameET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="99dp"
+        android:layout_marginTop="76dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:hint="Insert Name"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/newDescET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:hint="Insert Description"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/newNameET"
+        app:layout_constraintStart_toStartOf="@+id/newNameET"
+        app:layout_constraintTop_toBottomOf="@+id/newNameET" />
+
+    <Button
+        android:id="@+id/addBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Add"
+        app:layout_constraintEnd_toEndOf="@+id/newDescET"
+        app:layout_constraintStart_toStartOf="@+id/newDescET"
+        app:layout_constraintTop_toBottomOf="@+id/newDescET" />
 </androidx.constraintlayout.widget.ConstraintLayout>

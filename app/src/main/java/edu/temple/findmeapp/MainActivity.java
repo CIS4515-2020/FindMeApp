@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,11 +51,21 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
     private String dbcall;
     private DatabaseInterface dbInterface;
 
+    NfcAdapter nfcAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Checking for NFC component
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if( nfcAdapter == null ){
+            Toast.makeText(this, "App requires NFC component.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
 
         dbInterface = new DatabaseInterface( MainActivity.this );
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
