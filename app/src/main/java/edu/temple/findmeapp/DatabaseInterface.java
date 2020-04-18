@@ -263,23 +263,26 @@ public class DatabaseInterface {
             e.printStackTrace();
         }
 
-        assert result != null;
-        try {
-            if( result.getString("result").equals(FAILED) ){
-                String error = result.getString("error");
-                if( error.isEmpty() && result.has("exception") ){
-                    error = result.getString("exception");
+        if (result == null){
+            callback.errorResponse("Unknown error");
+        }else {
+            try {
+                if (result.getString("result").equals(FAILED)) {
+                    String error = result.getString("error");
+                    if (error.isEmpty() && result.has("exception")) {
+                        error = result.getString("exception");
+                    }
+                    callback.errorResponse(error);
+                } else {
+                    JSONArray data = null;
+                    if (result.has("data")) {
+                        data = result.getJSONArray("data");
+                    }
+                    callback.response(data);
                 }
-                callback.errorResponse( error );
-            }else{
-                JSONArray data = null;
-                if( result.has("data") ) {
-                    data = result.getJSONArray("data");
-                }
-                callback.response(data);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
