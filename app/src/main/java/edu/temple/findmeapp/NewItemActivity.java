@@ -1,11 +1,13 @@
 package edu.temple.findmeapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.IntentFilter;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -19,6 +21,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 public class NewItemActivity extends AppCompatActivity implements DatabaseInterface.DbResponseListener{
     private final static String TAG = "NewItemActivity ===>>>";
@@ -26,15 +29,22 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
     PendingIntent pi;
 
     private DatabaseInterface dbInterface;
+    private String dbcallback;
     private int userId;
 
     private static final String API_DOMAIN = "https://findmeapp.tech";
     static final String ITEM_EXT = "/item";
     static final String ADD_ACTION = "/add";
+    private int itemId;
+
+    private AlertDialog writeNFCDialog;
+    private static final int PENDING_INTENT_NDEF_DISCOVERED = 1;
+    private NfcAdapter mNfcAdapter;
+    boolean mWriteNfc = false;
 
     Button addBtn;
     EditText editTextName, editTextDesc;
-    boolean mWriteNfc = false;
+    private String itemName, itemDesc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +63,14 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
             dbInterface = new DatabaseInterface(this);
         }
 
-        Intent intent = new Intent(NewItemActivity.this, NewItemActivity.class);
-        pi = PendingIntent.getActivity(NewItemActivity.this, 0, intent, 0);
-
         addBtn = findViewById(R.id.addBtn);
         editTextName = findViewById(R.id.newNameET);
         editTextDesc = findViewById(R.id.newDescET);
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String itemName = editTextName.getText().toString();
-                String itemDesc = editTextDesc.getText().toString();
+                itemName = editTextName.getText().toString();
+                itemDesc = editTextDesc.getText().toString();
                 if ( itemName.isEmpty() || (itemName.trim().length() == 0) ){
                     Toast.makeText(NewItemActivity.this,
                             "Item name cannot be empty", Toast.LENGTH_SHORT).show();
@@ -73,12 +80,12 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
                             "Item description cannot be empty", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    dbInterface.addItem(userId, itemName, itemDesc);
                     mWriteNfc = true;
 
-                    // Pending Intent so that tags are delivered to this activity
-                    Intent intent = new Intent(NewItemActivity.this, NewItemActivity.class);
-                    pi = PendingIntent.getActivity(NewItemActivity.this, 0, intent, 0);
+                    dbcallback = "getNewItemId";
+                    dbInterface.getNewItemId();
+
+                    NewItemActivity.this.showWriteDialog();
                 }
             }
         });
@@ -88,7 +95,14 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
     @Override
     protected void onResume() {
         super.onResume();
-        NfcAdapter.getDefaultAdapter(getApplicationContext()).enableForegroundDispatch(this, pi, null, null);
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(getApplicationContext());
+
+        PendingIntent pi = createPendingResult(PENDING_INTENT_NDEF_DISCOVERED, new Intent(), 0);
+
+        mNfcAdapter.enableForegroundDispatch(this, pi,
+                new IntentFilter[]{ new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED)},
+                new String[][]{new String[]{ "android.nfc.tech.Ndef"}});
+//        NfcAdapter.getDefaultAdapter(getApplicationContext()).enableForegroundDispatch(this, pi, null, null);
     }
 
     @Override
@@ -98,18 +112,43 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())){
-            // upon receiving new intent, call method writing to tag
-            writeTag((Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG));
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case PENDING_INTENT_NDEF_DISCOVERED:
+                resolveIntent(data, true);
+                break;
         }
     }
+
+    protected void resolveIntent(Intent data, boolean foregroundDispatch){
+        String action = data.getAction();
+        if(NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)){
+            Tag tag = data.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            if(foregroundDispatch && mWriteNfc){
+                // This activity is in foreground dispatch and we want to write URI to Tag
+                mWriteNfc = false;
+
+                // Call method to write tag
+                writeTag(tag);
+
+                writeNFCDialog.dismiss();
+            }
+        }
+    }
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        super.onNewIntent(intent);
+//        if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())){
+//            // upon receiving new intent, call method writing to tag
+//            writeTag((Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG));
+//        }
+//    }
 
     // write payload of URI to Tag
     private void writeTag(Tag tag){
         NdefRecord uriRecord = NdefRecord.createUri(API_DOMAIN);
-        NdefMessage msg = new NdefMessage( new NdefRecord[]{uriRecord});
+        NdefMessage msg = new NdefMessage( new NdefRecord[]{uriRecord} );
 
         Ndef ndefTag = Ndef.get(tag);
         if(ndefTag != null){
@@ -118,7 +157,11 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
                 ndefTag.connect();
 
                 ndefTag.writeNdefMessage(msg);
+                Log.d("WriteTAG", "Writing to tag successful");
 
+                dbInterface = new DatabaseInterface(NewItemActivity.this);
+                dbcallback = "addItem";
+                dbInterface.addItem(itemId, userId, itemName, itemDesc);
             }
             catch(Exception e){
                 e.printStackTrace();
@@ -135,20 +178,54 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
         else{
             // TODO: Write code to format tag for NDEF
             // Tag is not yet Ndef formatted.
+            Log.d("FormatError", "Not NDEF Formatted!");
             Toast.makeText(NewItemActivity.this, "Sorry! " +
                     "Tag is not yet NDEF Formatted.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // TODO: Implements dialog box so that if canceled, writing to NFC is cancelled
-    private void showNfcDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(NewItemActivity.this);
+    private void showWriteDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_writetag, null);
+
+        Button writeCancelButton = view.findViewById(R.id.writeCancelBtn);
+        writeCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                writeNFCDialog.cancel();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                Log.d("mWriteNFC Boolean", String.valueOf(mWriteNfc));
+                mWriteNfc = false;
+                Log.d("mWriteNFC Boolean after dismiss", String.valueOf(mWriteNfc));
+            }
+        });
+
+        builder.setView(view);
+        writeNFCDialog = builder.create();
+        writeNFCDialog.show();
+
     }
 
     @Override
     public void response(JSONArray data) {
-        Toast.makeText(NewItemActivity.this, "Item added to DB", Toast.LENGTH_SHORT).show();
-        Log.d("Add Response", data.toString());
+        if(dbcallback.equals("getNewItemId")){
+            try {
+                itemId = Integer.valueOf(data.getJSONObject(0).getString("item_id"));
+                Log.d("Data Response", String.valueOf(itemId));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        if(dbcallback.equals("addItem")){
+            Log.d("Add item data response", data.toString());
+            Toast.makeText(NewItemActivity.this, "Item added to DB!", Toast.LENGTH_SHORT).show();
+            editTextName.getText().clear();
+            editTextDesc.getText().clear();
+        }
     }
 
     @Override
