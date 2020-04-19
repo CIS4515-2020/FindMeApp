@@ -106,6 +106,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dbcallback = "deleteItem";
                         dbInterface.deleteItem(mItem);
+
                         mWriteNfc = true;
                         DeleteItemActivity.this.showNfcDialog();
                     }
@@ -198,6 +199,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
 
                 ndefTag.writeNdefMessage(new NdefMessage(new NdefRecord(NdefRecord.TNF_EMPTY,
                         null, null, null)));
+                Log.d("DeleteTag", "Delete successful");
             }
             catch(Exception e){
                 e.printStackTrace();
@@ -240,6 +242,11 @@ public class DeleteItemActivity extends AppCompatActivity implements
             nameTextView.setText("");
             descTextView.setText("");
             lostTextView.setText("");
+            mItem = null;
+
+            // Short, simple way to refresh recyclerView
+            dbcallback = "getItems";
+            dbInterface.getItems(userId);
         }
     }
 
