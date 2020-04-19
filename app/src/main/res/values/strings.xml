@@ -10,10 +10,8 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
 
-    <string name="readDialogHeader">Reading NFC tag</string>
-    <string name="readDialogBody">Place tag near back of phone to start reading.</string>
-    <string name="writeDialogHeader">Write URL to tag...</string>
-    <string name="writeDialogBody">Place tag near back of phone to start writing.</string>
+    <string name="writeDialogHeader">Scanning for NFC tag</string>
+    <string name="writeDialogBody">Place tag near back of phone to apply command.</string>
     <!-- TODO: Reincorporate string resources into DBInterface and other use cases-->
 
 <!--    <string name="TAG">DatabaseInterface ===>>></string>-->

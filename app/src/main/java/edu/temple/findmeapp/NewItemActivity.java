@@ -51,7 +51,6 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
-
         getSupportActionBar().setTitle("New Item");
 
         userId = getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE)
@@ -147,6 +146,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
 
     // write payload of URI to Tag
     private void writeTag(Tag tag){
+        // TODO: Replace URI string with actual API url that will connect to web app's FoundItem page
         NdefRecord uriRecord = NdefRecord.createUri(API_DOMAIN);
         NdefMessage msg = new NdefMessage( new NdefRecord[]{uriRecord} );
 
@@ -186,7 +186,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
 
     private void showWriteDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.dialog_writetag, null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_scantag, null);
 
         Button writeCancelButton = view.findViewById(R.id.writeCancelBtn);
         writeCancelButton.setOnClickListener(new View.OnClickListener() {
@@ -220,11 +220,15 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
                 e.printStackTrace();
             }
         }
-        if(dbcallback.equals("addItem")){
+        else if(dbcallback.equals("addItem")){
             Log.d("Add item data response", data.toString());
             Toast.makeText(NewItemActivity.this, "Item added to DB!", Toast.LENGTH_SHORT).show();
             editTextName.getText().clear();
             editTextDesc.getText().clear();
+        }
+        else{
+            Log.d("Response NOT FOUND","dbcallback is currently either null or  set to" +
+                    "not-callable method");
         }
     }
 
