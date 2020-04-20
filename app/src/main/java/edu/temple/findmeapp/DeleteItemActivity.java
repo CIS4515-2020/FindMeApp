@@ -85,6 +85,10 @@ public class DeleteItemActivity extends AppCompatActivity implements
                 if( mItem != null){
                     showConfirmDialog();
                 }
+                else{
+                    Toast.makeText(DeleteItemActivity.this, "Must first choose an item to delete.",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
         findViewById(R.id.deleteScanBtn).setOnClickListener(new View.OnClickListener() {
