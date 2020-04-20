@@ -26,7 +26,14 @@ public class FoundItemMessage {
             this.lat = 0.0;
             this.lon = 0.0;
         }
-        this.message = args.getString("message");
+        try {
+            this.message = args.getString("message");
+            if (this.message.equals("null") || this.message.equals("")) {
+                this.message = "No message";
+            }
+        } catch (Exception e) {
+            this.message = "No message";
+        }
         this.foundOn = args.getString("found_on");
     }
 
