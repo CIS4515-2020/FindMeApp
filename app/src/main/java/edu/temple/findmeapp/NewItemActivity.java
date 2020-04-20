@@ -115,8 +115,10 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode){
             case PENDING_INTENT_NDEF_DISCOVERED:
-                resolveIntent(data, true);
-                break;
+                if(data != null) {
+                    resolveIntent(data, true);
+                    break;
+                }
         }
     }
 

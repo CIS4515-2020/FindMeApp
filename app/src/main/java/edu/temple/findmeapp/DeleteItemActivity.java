@@ -82,7 +82,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
         findViewById(R.id.deleteButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if( !nameTextView.getText().toString().equals("") ){
+                if( mItem != null){
                     showConfirmDialog();
                 }
             }
@@ -143,7 +143,6 @@ public class DeleteItemActivity extends AppCompatActivity implements
         builder.setView(view);
         scanNFCDialog = builder.create();
         scanNFCDialog.show();
-
     }
 
     @Override
@@ -169,8 +168,10 @@ public class DeleteItemActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode){
             case PENDING_INTENT_NDEF_DISCOVERED:
-                resolveIntent(data, true);
-                break;
+                if(data != null) {
+                    resolveIntent(data, true);
+                    break;
+                }
         }
     }
 

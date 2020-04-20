@@ -1,14 +1,24 @@
 package edu.temple.findmeapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
+import android.nfc.tech.NfcA;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +40,6 @@ public class EditItemActivity extends AppCompatActivity implements
     private EditText nameEditText, descEditText;
     private CheckBox lostCheckBox;
     private boolean mStartUp = true;
-    private Button saveButton;
 
     private ItemListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -42,7 +51,7 @@ public class EditItemActivity extends AppCompatActivity implements
     private String dbcallback;
 
     private AlertDialog scanNFCDialog;
-    private boolean mWriteNfc = false;
+    private boolean mReadNfc = false;
     private NfcAdapter mNfcAdapter;
     private static final int PENDING_INTENT_NDEF_DISCOVERED = 1;
 
@@ -62,13 +71,9 @@ public class EditItemActivity extends AppCompatActivity implements
         nameEditText = findViewById(R.id.editNameET);
         descEditText = findViewById(R.id.editDescET);
         lostCheckBox = findViewById(R.id.lostCheckBox);
-        saveButton = findViewById(R.id.saveButton);
-
-        setFocusable(mStartUp);
 
         SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
         userId = sharedPreferences.getInt(MainActivity.SHARED_PREFS_USERID, 0);
-
         if (userId == 0) {
             Toast.makeText(this, "Please login first.", Toast.LENGTH_SHORT).show();
             finish();
@@ -78,12 +83,37 @@ public class EditItemActivity extends AppCompatActivity implements
             dbInterface.getItems(userId);
         }
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        setFocusable(mStartUp);
+
+        findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showChangesDialog();
+                if (!(mItem.getName().equals(nameEditText.getText().toString().trim())
+                    || !(mItem.getDescription().equals(descEditText.getText().toString().trim()))
+                    || (mItem.isLost() != lostCheckBox.isChecked()))) {
+                    showChangesDialog();
+                }
             }
         });
+
+        findViewById(R.id.editScanBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mReadNfc = true;
+                EditItemActivity.this.showNfcDialog();
+            }
+        });
+    }
+
+    private void setFocusable(boolean isStartup){
+        if(isStartup){
+            nameEditText.setFocusable(false);
+            descEditText.setFocusable(false);
+        }
+        else{
+            nameEditText.setFocusableInTouchMode(true);
+            descEditText.setFocusableInTouchMode(true);
+        }
     }
 
     private void showChangesDialog() {
@@ -120,14 +150,100 @@ public class EditItemActivity extends AppCompatActivity implements
         builder.create().show();
     }
 
-    private void setFocusable(boolean isStartup){
-        if(isStartup){
-            nameEditText.setFocusable(false);
-            descEditText.setFocusable(false);
+    private void showNfcDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditItemActivity.this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_scantag, null);
+
+        Button writeCancelButton = view.findViewById(R.id.writeCancelBtn);
+        writeCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scanNFCDialog.cancel();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                Log.d("mWriteNFC Boolean", String.valueOf(mReadNfc));
+                mReadNfc = false;
+                Log.d("mWriteNFC Boolean after dismiss", String.valueOf(mReadNfc));
+            }
+        });
+
+        builder.setView(view);
+        scanNFCDialog = builder.create();
+        scanNFCDialog.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(getApplicationContext());
+
+        PendingIntent pi = createPendingResult(PENDING_INTENT_NDEF_DISCOVERED, new Intent(), 0);
+
+        mNfcAdapter.enableForegroundDispatch(EditItemActivity.this, pi,
+                new IntentFilter[]{ new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED)},
+                new String[][]{new String[]{ "android.nfc.tech.Ndef"}});
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        NfcAdapter.getDefaultAdapter(getApplicationContext()).disableForegroundDispatch(EditItemActivity.this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case PENDING_INTENT_NDEF_DISCOVERED:
+                if(data != null) {
+                    resolveIntent(data, true);
+                    break;
+                }
         }
-        else{
-            nameEditText.setFocusableInTouchMode(true);
-            descEditText.setFocusableInTouchMode(true);
+    }
+
+    protected void resolveIntent(Intent data, boolean foregroundDispatch){
+        String action = data.getAction();
+        if(NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)){
+            if(foregroundDispatch && mReadNfc){
+                Tag tag = data.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                // This activity is in foreground dispatch and we want to write URI to Tag
+                mReadNfc = false;
+
+                // Call method to write tag
+                readTag(tag);
+
+                scanNFCDialog.dismiss();
+            }
+        }
+    }
+
+    private void readTag(Tag tag){
+        Ndef ndefTag = Ndef.get(tag);
+        if(ndefTag != null) {
+            try {
+                ndefTag.connect();
+                NdefMessage ndefMessage = ndefTag.getNdefMessage();
+                String payload = new String(ndefMessage.getRecords()[0].getPayload());
+                // TODO: Make appropriate edits to display item info upon scanning tag.
+                Log.d("Read tag payload", payload);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                Toast.makeText(EditItemActivity.this, "Error. Could not read tag.",
+                        Toast.LENGTH_SHORT).show();
+            }
+            finally {
+                try{
+                    ndefTag.close();
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -168,5 +284,6 @@ public class EditItemActivity extends AppCompatActivity implements
 
     @Override
     public void onItemLongClick(Item item) {
+        // TODO: Decide if long click should have any functionality
     }
 }

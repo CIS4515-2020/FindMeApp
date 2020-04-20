@@ -80,7 +80,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:paddingTop="20dp"
-            android:text="Scan" />
+            android:text="Erase Tag" />
 
         <Button
             android:id="@+id/deleteButton"
