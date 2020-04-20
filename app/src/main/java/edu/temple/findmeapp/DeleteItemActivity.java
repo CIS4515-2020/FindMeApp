@@ -83,7 +83,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 if( mItem != null){
-                    showConfirmDialog();
+                    DeleteItemActivity.this.showConfirmDialog();
                 }
                 else{
                     Toast.makeText(DeleteItemActivity.this, "Must first choose an item to delete.",
@@ -101,7 +101,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
     }
 
     private void showConfirmDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(DeleteItemActivity.this);
         builder.setTitle("Delete item?")
                 .setMessage(nameTextView.getText().toString())
                 .setCancelable(true)

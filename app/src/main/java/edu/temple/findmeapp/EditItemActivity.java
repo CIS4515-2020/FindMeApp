@@ -88,10 +88,10 @@ public class EditItemActivity extends AppCompatActivity implements
         findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!(mItem.getName().equals(nameEditText.getText().toString().trim())
-                    || !(mItem.getDescription().equals(descEditText.getText().toString().trim()))
-                    || (mItem.isLost() != lostCheckBox.isChecked()))) {
-                    showChangesDialog();
+                if ( (!mItem.getName().equals(nameEditText.getText().toString().trim()))
+                    || (!mItem.getDescription().equals(descEditText.getText().toString().trim()))
+                    || (mItem.isLost() != lostCheckBox.isChecked())) {
+                    EditItemActivity.this.showChangesDialog();
                 }
             }
         });
@@ -117,7 +117,7 @@ public class EditItemActivity extends AppCompatActivity implements
     }
 
     private void showChangesDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditItemActivity.this);
         String title = "Save changes?";
         String message = "Original:\n" +
                 "Name: " + mItem.getName()+"\n" +
@@ -269,7 +269,7 @@ public class EditItemActivity extends AppCompatActivity implements
 
     @Override
     public void errorResponse(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(EditItemActivity.this, error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
