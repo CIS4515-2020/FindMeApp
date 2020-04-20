@@ -165,6 +165,8 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
             }
             catch(Exception e){
                 e.printStackTrace();
+                Toast.makeText(NewItemActivity.this, "Error. Could not write to tag.",
+                        Toast.LENGTH_SHORT).show();
             }
             finally{
                 try{

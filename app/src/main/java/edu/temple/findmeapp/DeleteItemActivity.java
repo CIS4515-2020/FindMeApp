@@ -34,16 +34,16 @@ public class DeleteItemActivity extends AppCompatActivity implements
     private final static String TAG = "DeleteItemActivity ===>>>";
 
     private RecyclerView recyclerView;
+    private TextView nameTextView, descTextView, lostTextView;
+
     private ItemListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<Item> itemList = new ArrayList<>();
+    private Item mItem;
 
     private DatabaseInterface dbInterface;
     private int userId;
     private String dbcallback;
-
-    private TextView nameTextView, descTextView, lostTextView;
-    private Item mItem;
 
     private AlertDialog scanNFCDialog;
     private boolean mWriteNfc = false;
@@ -242,9 +242,13 @@ public class DeleteItemActivity extends AppCompatActivity implements
             nameTextView.setText("");
             descTextView.setText("");
             lostTextView.setText("");
+            // TODO: Add less overhead way of updating recyclerView
+//            itemList.remove(mItem);
+//            adapter.itemList = itemList;
+//            adapter.notifyDataSetChanged();
             mItem = null;
 
-            // Short, simple way to refresh recyclerView
+//             Short, simple way to refresh recyclerView
             dbcallback = "getItems";
             dbInterface.getItems(userId);
         }
