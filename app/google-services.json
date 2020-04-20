@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "416948168017",
+    "firebase_url": "https://findme-2020.firebaseio.com",
+    "project_id": "findme-2020",
+    "storage_bucket": "findme-2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416948168017:android:24b8a1af1b69d7325f1f70",
+        "android_client_info": {
+          "package_name": "edu.temple.findmeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "416948168017-ocq8hcjvdhn0ul76dns1n6m67thcalcu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ5XmEyeo3X1wRTBBlFaNmL0FhKL4GWdA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "416948168017-ocq8hcjvdhn0ul76dns1n6m67thcalcu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
