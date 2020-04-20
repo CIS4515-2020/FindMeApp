@@ -26,7 +26,8 @@ public class DatabaseInterface {
     static final String LOGIN_EXT = "/login";
     static final String REGISTER_EXT = "/register-user";
     static final String ITEM_EXT = "/item";
-    static final String FOUND_ITEM_MESSAGE_EXT = "/found-item";
+    static final String FOUND_ITEM_MESSAGE_EXT = "/found-item-message";
+    static final String GET_ACTION = "/get";
     static final String ADD_ACTION = "/add";
     static final String EDIT_ACTION = "/edit";
     static final String DELETE_ACTION = "/delete";
@@ -95,6 +96,18 @@ public class DatabaseInterface {
     public void getNewItemId(){
         Map<String, String> params = new HashMap<>();
         String url = API_DOMAIN + ITEM_EXT + ID_ACTION;
+        this.makeVolleyRequest( url, params );
+    }
+
+    /**
+     * get item by id
+     *
+     * @param item_id
+     */
+    public void getItem( Integer item_id ){
+        Map<String, String> params = new HashMap<>();
+        params.put("item_id", String.valueOf(item_id));
+        String url = API_DOMAIN + ITEM_EXT + GET_ACTION;
         this.makeVolleyRequest( url, params );
     }
 
