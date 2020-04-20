@@ -29,10 +29,10 @@ public class FoundItemMessage {
         try {
             this.message = args.getString("message");
             if (this.message.equals("null") || this.message.equals("")) {
-                this.message = "No message";
+                this.message = "No description";
             }
         } catch (Exception e) {
-            this.message = "No message";
+            this.message = "No description";
         }
         this.foundOn = args.getString("found_on");
     }
