@@ -1,7 +1,9 @@
 package edu.temple.findmeapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,12 +18,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements DatabaseInterface.DbResponseListener {
@@ -75,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
         } else {
             loggedIn = true;
             getSupportActionBar().setTitle("Find Me - " +username);
+            subscribeToNotifications();
         }
 
         buttonNewItemActivity     = findViewById(R.id.button_new_item);
@@ -130,6 +141,20 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
             }
         });
 
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if(!task.isSuccessful()){
+                            Log.d("GetInstanceID Failed", task.getException().toString());
+                        }
+
+                        String token = task.getResult().getToken();
+
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, msg);
+                    }
+                });
     }
 
     private void showLoginDialog() {
@@ -219,6 +244,21 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
         dialogRegister.show();
     }
 
+    public void subscribeToNotifications(){
+        FirebaseMessaging.getInstance().subscribeToTopic("notifications")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscribed successfully to notifications!";
+                        if (!task.isSuccessful()) {
+                            msg = "Subscription to notifications failed.";
+                        }
+                        Log.d(TAG, msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 
     @Override
     public void response(JSONArray data) {
@@ -237,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                 loggedIn = true;
                 getSupportActionBar().setTitle("Find Me - " + user.getUsername());
                 dialogLogin.cancel();
+                subscribeToNotifications();
             } else if (dbcall.equals("register")){
                 dbcall = null;
                 registerProgressBar.setVisibility(View.GONE);
@@ -251,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                 loggedIn = true;
                 getSupportActionBar().setTitle("Find Me - " + user.getUsername());
                 dialogRegister.cancel();
+                subscribeToNotifications();
             }
         } catch (JSONException e) {
             e.printStackTrace();
