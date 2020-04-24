@@ -45,6 +45,7 @@ public class EditItemActivity extends AppCompatActivity implements
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<Item> itemList = new ArrayList<>();
     private Item mItem;
+    private int itemId;
 
     private DatabaseInterface dbInterface;
     private int userId;
@@ -193,6 +194,7 @@ public class EditItemActivity extends AppCompatActivity implements
         NfcAdapter.getDefaultAdapter(getApplicationContext()).disableForegroundDispatch(EditItemActivity.this);
     }
 
+    // TODO: Add PendingIntent so non-foreground calls will be made for EditItem to read tag
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -208,17 +210,27 @@ public class EditItemActivity extends AppCompatActivity implements
     protected void resolveIntent(Intent data, boolean foregroundDispatch){
         String action = data.getAction();
         if(NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)){
+            // This activity is in foreground dispatch and we want to read URI from Tag
+            Tag tag = data.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             if(foregroundDispatch && mReadNfc){
-                Tag tag = data.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                // This activity is in foreground dispatch and we want to write URI to Tag
+
                 mReadNfc = false;
 
-                // Call method to write tag
+                // Call method to read tag
                 readTag(tag);
 
                 scanNFCDialog.dismiss();
             }
         }
+    }
+
+    private boolean userIsOwner(int itemId){
+        for(int i = 0; i < itemList.size(); i++){
+            if(itemList.get(i).getId() == itemId){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void readTag(Tag tag){
@@ -228,8 +240,19 @@ public class EditItemActivity extends AppCompatActivity implements
                 ndefTag.connect();
                 NdefMessage ndefMessage = ndefTag.getNdefMessage();
                 String payload = new String(ndefMessage.getRecords()[0].getPayload());
-                // TODO: Make appropriate edits to display item info upon scanning tag.
                 Log.d("Read tag payload", payload);
+                String[] tagInfo = payload.split("/");
+                itemId = new Integer(tagInfo[tagInfo.length - 1]);
+                Log.d("Payload itemID", String.valueOf(itemId));
+                boolean isOwner = userIsOwner(itemId);
+                if(isOwner){
+                    dbcallback = "getItem";
+                    dbInterface.getItem(itemId);
+                }
+                else
+                    Toast.makeText(EditItemActivity.this,
+                            "Sorry. You are not the owner of this tag.",
+                            Toast.LENGTH_SHORT).show();
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -244,6 +267,10 @@ public class EditItemActivity extends AppCompatActivity implements
                     e.printStackTrace();
                 }
             }
+        }
+        else{
+            Toast.makeText(EditItemActivity.this, "Tag is blank!",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -264,6 +291,13 @@ public class EditItemActivity extends AppCompatActivity implements
         else if(dbcallback.equals("editItem")){
             finish();
             startActivity(getIntent());
+        }
+        else if(dbcallback.equals("getItem")){
+            try {
+                EditItemActivity.this.onItemClick(new Item(data.getJSONObject(0)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

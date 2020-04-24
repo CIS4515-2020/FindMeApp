@@ -33,8 +33,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
     private int userId;
 
     private static final String API_DOMAIN = "https://findmeapp.tech";
-    static final String ITEM_EXT = "/item";
-    static final String ADD_ACTION = "/add";
+    static final String FOUND_ACTION = "/found-item";
     private int itemId;
 
     private AlertDialog writeNFCDialog;
@@ -148,8 +147,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
 
     // write payload of URI to Tag
     private void writeTag(Tag tag){
-        // TODO: Replace URI string with actual API url that will connect to web app's FoundItem page
-        NdefRecord uriRecord = NdefRecord.createUri(API_DOMAIN);
+        NdefRecord uriRecord = NdefRecord.createUri(API_DOMAIN+FOUND_ACTION+"/"+itemId);
         NdefMessage msg = new NdefMessage( new NdefRecord[]{uriRecord} );
 
         Ndef ndefTag = Ndef.get(tag);
@@ -219,7 +217,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
         if(dbcallback.equals("getNewItemId")){
             try {
                 itemId = Integer.valueOf(data.getJSONObject(0).getString("item_id"));
-                Log.d("Data Response", String.valueOf(itemId));
+                Log.d("Data Response itemID", String.valueOf(itemId));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

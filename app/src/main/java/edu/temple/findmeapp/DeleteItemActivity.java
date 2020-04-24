@@ -219,7 +219,6 @@ public class DeleteItemActivity extends AppCompatActivity implements
             }
         }
         else{
-            // TODO: Write code to format tag for NDEF
             // Tag is not yet Ndef formatted.
             Log.d("FormatError", "Not NDEF Formatted!");
             Toast.makeText(DeleteItemActivity.this, "Sorry! " +

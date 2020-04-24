@@ -12,6 +12,8 @@
 
     <string name="writeDialogHeader">Scanning for NFC tag</string>
     <string name="writeDialogBody">Place tag near back of phone to apply command.</string>
+
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
     <!-- TODO: Reincorporate string resources into DBInterface and other use cases-->
 
 <!--    <string name="TAG">DatabaseInterface ===>>></string>-->
