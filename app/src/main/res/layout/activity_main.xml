@@ -10,84 +10,103 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.45"
+        android:layout_weight="45"
+        android:background="@color/black"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/button_new_item"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="50"
             android:background="@color/darkGreen"
             android:text="New Item"
-            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="24sp"
-            android:textColor="@color/white"/>
+            android:textStyle="bold" />
+
         <Button
             android:id="@+id/button_edit_item"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="50"
             android:background="@color/orange"
             android:text="Edit Item"
-            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="24sp"
-            android:textColor="@color/white"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.45"
+        android:layout_weight="45"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/button_delete_item"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="50"
             android:background="@color/violet"
             android:text="Delete Item"
-            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="24sp"
-            android:textColor="@color/white"/>
+            android:textStyle="bold" />
+
         <Button
             android:id="@+id/button_item_display"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="50"
             android:background="@color/turquoise"
             android:text="Item List"
-            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="24sp"
-            android:textColor="@color/white"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.1"
-        android:orientation="horizontal">
+        android:layout_weight="10"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_login"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="50"
+                android:background="@color/even_darkest_gray"
+                android:text="Login"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/button_register"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="50"
+                android:background="@color/even_darkest_gray"
+                android:text="Register"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <Button
-            android:id="@+id/button_login"
-            android:layout_width="0dp"
+            android:id="@+id/button_logout"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@color/black"
-            android:text="Login"
-            android:textSize="14sp"
+            android:background="@color/even_darkest_gray"
+            android:text="Logout"
             android:textColor="@color/white"
-            />
-        <Button
-            android:id="@+id/button_register"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@color/black"
-            android:text="Register"
             android:textSize="14sp"
-            android:textColor="@color/white"
-            />
-
+            android:visibility="gone"/>
 
     </LinearLayout>
 
