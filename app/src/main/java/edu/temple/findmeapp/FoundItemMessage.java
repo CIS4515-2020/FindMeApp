@@ -70,4 +70,14 @@ public class FoundItemMessage {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString(){
+        return    "FoundItemMessage"   + "\n"
+                + "message: " +message + "\n"
+                + "id:      " +id      + "\n"
+                + "foundOn: " +foundOn + "\n"
+                + "lat:     " +lat     + "\n"
+                + "lon:     " +lon;
+    }
 }
