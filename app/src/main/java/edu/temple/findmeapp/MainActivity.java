@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,13 +47,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
     private Button      buttonRegister;
     private ProgressBar loginProgressBar;
     private ProgressBar registerProgressBar;
+    private LinearLayout loginRegisterButtonFrame;
     private Button buttonLoginDialog;
     private Button buttonRegisterDialog;
+    private Button buttonLogout;
     private AlertDialog dialogLogin;
     private AlertDialog dialogRegister;
-    private Boolean     loggedIn;
-
-    private String username;
 
     protected final static String SHARED_PREFS          = "sharedPrefs";
     protected final static String SHARED_PREFS_USERNAME = "sharedPrefsUsername";
@@ -77,23 +77,28 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
             return;
         }
 
-        dbInterface = new DatabaseInterface( MainActivity.this );
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        username = sharedPreferences.getString(SHARED_PREFS_USERNAME, "");
-        if (username.equals("")) {
-            loggedIn = false;
-        } else {
-            loggedIn = true;
-            getSupportActionBar().setTitle("Find Me - " +username);
-            subscribeToNotifications();
-        }
-
         buttonNewItemActivity     = findViewById(R.id.button_new_item);
         buttonEditItemActivity    = findViewById(R.id.button_edit_item);
         buttonDeleteItemActivity  = findViewById(R.id.button_delete_item);
         buttonItemDisplayActivity = findViewById(R.id.button_item_display);
+        loginRegisterButtonFrame  = findViewById(R.id.login_register_button_frame);
         buttonLogin               = findViewById(R.id.button_login);
         buttonRegister            = findViewById(R.id.button_register);
+        buttonLogout              = findViewById(R.id.button_logout);
+
+        dbInterface = new DatabaseInterface( MainActivity.this );
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        String username = sharedPreferences.getString(SHARED_PREFS_USERNAME, "");
+        if (username.equals("")) { // Not logged in
+            getSupportActionBar().setTitle("Find Me");
+            loginRegisterButtonFrame.setVisibility(View.VISIBLE);
+            buttonLogout.setVisibility(View.GONE);
+        } else { // Logged in
+            getSupportActionBar().setTitle("Find Me - " +username);
+            loginRegisterButtonFrame.setVisibility(View.GONE);
+            buttonLogout.setVisibility(View.VISIBLE);
+            subscribeToNotifications(true); // TODO: replace with user id
+        }
 
         buttonNewItemActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +146,21 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
             }
         });
 
+        buttonLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                unsubscribeToNotifications(true);
+                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(SHARED_PREFS_USERNAME, "");
+                editor.putInt(SHARED_PREFS_USERID, 0);
+                editor.commit();
+                getSupportActionBar().setTitle("Find Me");
+                buttonLogout.setVisibility(View.GONE);
+                loginRegisterButtonFrame.setVisibility(View.VISIBLE);
+            }
+        });
+
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -155,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                         Log.d(TAG, msg);
                     }
                 });
+
+
     }
 
     private void showLoginDialog() {
@@ -244,17 +266,49 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
         dialogRegister.show();
     }
 
-    public void subscribeToNotifications(){
-        FirebaseMessaging.getInstance().subscribeToTopic("notifications")
+    public void subscribeToNotifications(final boolean showToast){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        int userId = sharedPreferences.getInt(SHARED_PREFS_USERID, 0);
+
+        if (userId != 0) {
+            FirebaseMessaging.getInstance().subscribeToTopic(String.valueOf(userId))
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            String msg = "Subscribed successfully to notifications!";
+                            if (!task.isSuccessful()) {
+                                msg = "Subscription to notifications failed.";
+                            }
+                            Log.d(TAG, msg);
+                            if (showToast) {
+                                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        } else {
+            Toast.makeText(MainActivity.this, "Warning: subscribe called with userId 0", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void unsubscribeToNotifications(final boolean showToast) {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        int userId = sharedPreferences.getInt(SHARED_PREFS_USERID, 0);
+
+        if (userId == 0) {
+            Toast.makeText(MainActivity.this, "Warning: unsubscribe called with userId 0", Toast.LENGTH_SHORT).show();
+        }
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(String.valueOf(userId))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Subscribed successfully to notifications!";
+                        String msg = "Successfully unsubscribed to notifications!";
                         if (!task.isSuccessful()) {
-                            msg = "Subscription to notifications failed.";
+                            msg = "Unsubscribe to notifications failed.";
                         }
                         Log.d(TAG, msg);
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        if (showToast) {
+                            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
@@ -274,10 +328,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                 editor.putString(SHARED_PREFS_USERNAME, user.getUsername());
                 editor.putInt(SHARED_PREFS_USERID, user.getId());
                 editor.commit();
-                loggedIn = true;
                 getSupportActionBar().setTitle("Find Me - " + user.getUsername());
                 dialogLogin.cancel();
-                subscribeToNotifications();
+                subscribeToNotifications(true);
+                loginRegisterButtonFrame.setVisibility(View.GONE);
+                buttonLogout.setVisibility(View.VISIBLE);
             } else if (dbcall.equals("register")){
                 dbcall = null;
                 registerProgressBar.setVisibility(View.GONE);
@@ -289,10 +344,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                 editor.putString(SHARED_PREFS_USERNAME, user.getUsername());
                 editor.putInt(SHARED_PREFS_USERID, user.getId());
                 editor.commit();
-                loggedIn = true;
                 getSupportActionBar().setTitle("Find Me - " + user.getUsername());
                 dialogRegister.cancel();
-                subscribeToNotifications();
+                subscribeToNotifications(true);
+                loginRegisterButtonFrame.setVisibility(View.GONE);
+                buttonLogout.setVisibility(View.VISIBLE);
             }
         } catch (JSONException e) {
             e.printStackTrace();
