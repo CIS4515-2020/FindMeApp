@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.RecoverySystem;
 import android.util.Log;
@@ -21,12 +23,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ItemDisplayActivity extends AppCompatActivity implements
         DatabaseInterface.DbResponseListener,
         ItemListAdapter.ItemClickListener,
-        FoundItemMessageListAdapter.ItemClickListener{
+        FoundItemMessageListAdapter.ItemClickListener {
     private final static String TAG = "ItemDisplayActivity ===>>>";
 
     private RecyclerView recyclerView;
@@ -107,7 +111,7 @@ public class ItemDisplayActivity extends AppCompatActivity implements
                 foundDialog.cancel();
                 Toast.makeText(this, "No messages", Toast.LENGTH_SHORT).show();
             } else {
-                foundDialogTextView.setText("Messages: " +String.valueOf(messageList.size()));
+                foundDialogTextView.setText("Messages: " + String.valueOf(messageList.size()));
                 dialogRecyclerView.setVisibility(View.VISIBLE);
                 foundDialogProgressBar.setVisibility(View.GONE);
                 foundDialogButton.setVisibility(View.VISIBLE);
@@ -166,7 +170,7 @@ public class ItemDisplayActivity extends AppCompatActivity implements
 
         lostDialogTextView = view.findViewById(R.id.lostDialogTextView);
         lostDialogProgressBar = view.findViewById(R.id.lostProgressBar);
-        lostDialogButton     = view.findViewById(R.id.lostDialogButton);
+        lostDialogButton = view.findViewById(R.id.lostDialogButton);
         if (item.isLost()) {
             lostDialogTextView.setText("Set item to found?");
             lostDialogButton.setText("Found Item");
@@ -184,7 +188,7 @@ public class ItemDisplayActivity extends AppCompatActivity implements
                 lostDialogButton.setVisibility(View.GONE);
                 lostDialogProgressBar.setVisibility(View.VISIBLE);
 
-                DatabaseInterface dbInterface = new DatabaseInterface( ItemDisplayActivity.this );
+                DatabaseInterface dbInterface = new DatabaseInterface(ItemDisplayActivity.this);
                 dbcall = "editItem";
                 dbInterface.editItem(newItem);
             }
@@ -196,6 +200,16 @@ public class ItemDisplayActivity extends AppCompatActivity implements
     }
 
     public void onMessageClick(FoundItemMessage message) {
-        Log.d(TAG, "onMessageClick");
+        Log.d(TAG, "onMessageClick: " + message.toString());
+        double lat = message.getLat();
+        double lon = message.getLon();
+        String label = "Item Found";
+        if (lat == 0 || lon == 0) {
+            Toast.makeText(ItemDisplayActivity.this, "No location provided", Toast.LENGTH_SHORT).show();
+        } else {
+            Uri uri = Uri.parse("geo:0,0?q=" + lat + "," + lon + "(" + label + ")");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        }
     }
 }
