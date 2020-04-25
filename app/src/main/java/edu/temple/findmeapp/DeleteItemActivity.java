@@ -110,9 +110,6 @@ public class DeleteItemActivity extends AppCompatActivity implements
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dbcallback = "deleteItem";
                         dbInterface.deleteItem(mItem);
-
-                        mWriteNfc = true;
-                        DeleteItemActivity.this.showNfcDialog();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -218,7 +215,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
                 }
             }
         }
-        else{
+        else {
             // Tag is not yet Ndef formatted.
             Log.d("FormatError", "Not NDEF Formatted!");
             Toast.makeText(DeleteItemActivity.this, "Sorry! " +
@@ -250,6 +247,8 @@ public class DeleteItemActivity extends AppCompatActivity implements
 //            itemList.remove(mItem);
 //            adapter.itemList = itemList;
 //            adapter.notifyDataSetChanged();
+            mWriteNfc = true;
+            DeleteItemActivity.this.showNfcDialog();
             mItem = null;
 
 //             Short, simple way to refresh recyclerView
@@ -261,6 +260,12 @@ public class DeleteItemActivity extends AppCompatActivity implements
     @Override
     public void errorResponse(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+
+        if (dbcallback.equals("deleteItem")) {
+            mWriteNfc = true;
+            DeleteItemActivity.this.showNfcDialog();
+            mItem = null;
+        }
     }
 
     @Override
