@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class ItemDisplayActivity extends AppCompatActivity implements
@@ -98,7 +99,7 @@ public class ItemDisplayActivity extends AppCompatActivity implements
             for (int i = 0; i < data.length(); i++) {
                 try {
                     messageList.add(new FoundItemMessage(data.getJSONObject(i)));
-                } catch (JSONException e) {
+                } catch (JSONException | ParseException e) {
                     e.printStackTrace();
                 }
             }
