@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ public class DeleteItemActivity extends AppCompatActivity implements
     private boolean mWriteNfc = false;
     private NfcAdapter mNfcAdapter;
     private static final int PENDING_INTENT_NDEF_DISCOVERED = 1;
+
+    private AlertDialog confirmDeleteDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,25 +103,32 @@ public class DeleteItemActivity extends AppCompatActivity implements
         });
     }
 
+
     private void showConfirmDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DeleteItemActivity.this);
-        builder.setTitle("Delete item?")
-                .setMessage(nameTextView.getText().toString())
-                .setCancelable(true)
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dbcallback = "deleteItem";
-                        dbInterface.deleteItem(mItem);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-        builder.create().show();
+        View view = getLayoutInflater().inflate(R.layout.dialog_confirm_delete, null);
+
+        TextView confirmDeleteDialogText = view.findViewById(R.id.confirmDeleteDialogText);
+        final Button confirmDeleteDialogButton = view.findViewById(R.id.confirmDeleteDialogButton);
+        final ProgressBar confirmDeleteDialogProgressBar = view.findViewById(R.id.confirmDeleteDialogProgressBar);
+
+        confirmDeleteDialogText.setText(nameTextView.getText().toString());
+        confirmDeleteDialogButton.setVisibility(View.VISIBLE);
+        confirmDeleteDialogProgressBar.setVisibility(View.GONE);
+
+        confirmDeleteDialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dbcallback = "deleteItem";
+                dbInterface.deleteItem(mItem);
+                confirmDeleteDialogButton.setVisibility(View.GONE);
+                confirmDeleteDialogProgressBar.setVisibility(View.VISIBLE);
+            }
+        });
+
+        builder.setView(view);
+        confirmDeleteDialog = builder.create();
+        confirmDeleteDialog.show();
     }
 
     private void showNfcDialog(){
@@ -243,6 +253,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
             nameTextView.setText("");
             descTextView.setText("");
             lostTextView.setText("");
+            confirmDeleteDialog.cancel();
             // TODO: Add less overhead way of updating recyclerView
 //            itemList.remove(mItem);
 //            adapter.itemList = itemList;
@@ -251,7 +262,6 @@ public class DeleteItemActivity extends AppCompatActivity implements
             DeleteItemActivity.this.showNfcDialog();
             mItem = null;
 
-//             Short, simple way to refresh recyclerView
             dbcallback = "getItems";
             dbInterface.getItems(userId);
         }
@@ -262,9 +272,16 @@ public class DeleteItemActivity extends AppCompatActivity implements
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
 
         if (dbcallback.equals("deleteItem")) {
+            nameTextView.setText("");
+            descTextView.setText("");
+            lostTextView.setText("");
+            confirmDeleteDialog.cancel();
             mWriteNfc = true;
             DeleteItemActivity.this.showNfcDialog();
             mItem = null;
+
+            dbcallback = "getItems";
+            dbInterface.getItems(userId);
         }
     }
 
@@ -276,6 +293,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
         lostTextView.setText(String.valueOf(item.isLost()));
         Log.d(TAG, "onItemClick(): " +item.toString());
     }
+
 
     @Override
     public void onItemLongClick(Item item) {
