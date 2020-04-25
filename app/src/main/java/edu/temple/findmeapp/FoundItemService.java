@@ -49,7 +49,7 @@ public class FoundItemService extends FirebaseMessagingService {
 
 
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-        String channel_id = "admin_channel";
+        String channel_id = "my_notification_channel";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Found Item Notifications";
@@ -73,8 +73,8 @@ public class FoundItemService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         // build notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channel_id");
-        //builder.setSmallIcon(R.drawable.ic_small); TODO: set icon
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channel_id);
+        builder.setSmallIcon(R.drawable.ic_star);// TODO: set new icon
         builder.setContentTitle(title);
         builder.setContentText(content);
         builder.setAutoCancel(true);
