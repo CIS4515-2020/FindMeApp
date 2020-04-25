@@ -85,4 +85,14 @@ public class Item {
     public void clearFoundItemMessages() {
         this.foundItemMessages.clear();
     }
+
+    @Override
+    public String toString() {
+        return    "ITEM"                       + "\n"
+                + "name:        " +name        + "\n"
+                + "description: " +description + "\n"
+                + "id:          " +id          + "\n"
+                + "userId:      " +userId      + "\n"
+                + "lost:        " +lost;
+    }
 }

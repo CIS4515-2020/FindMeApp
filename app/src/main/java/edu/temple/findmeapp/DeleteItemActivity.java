@@ -274,6 +274,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
         nameTextView.setText(item.getName());
         descTextView.setText(item.getDescription());
         lostTextView.setText(String.valueOf(item.isLost()));
+        Log.d(TAG, "onItemClick(): " +item.toString());
     }
 
     @Override
@@ -282,6 +283,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
         nameTextView.setText(item.getName());
         descTextView.setText(item.getDescription());
         lostTextView.setText(String.valueOf(item.isLost()));
+        Log.d(TAG, "onItemLongClick(): " +item.toString());
         showConfirmDialog();
     }
 }
