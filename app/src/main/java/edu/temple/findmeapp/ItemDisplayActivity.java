@@ -107,6 +107,7 @@ public class ItemDisplayActivity extends AppCompatActivity implements
                 Toast.makeText(this, "No messages", Toast.LENGTH_SHORT).show();
             } else {
                 foundDialogTextView.setText("Messages: " +String.valueOf(messageList.size()));
+                dialogRecyclerView.setVisibility(View.VISIBLE);
                 foundDialogProgressBar.setVisibility(View.GONE);
                 foundDialogButton.setVisibility(View.VISIBLE);
                 dialogAdapter.foundItemMessageList = messageList;
@@ -137,6 +138,7 @@ public class ItemDisplayActivity extends AppCompatActivity implements
         foundDialogButton = view.findViewById(R.id.foundDialogButton);
         foundDialogProgressBar = view.findViewById(R.id.foundDialogProgressBar);
 
+        dialogRecyclerView.setVisibility(View.GONE);
         foundDialogButton.setVisibility(View.GONE);
         foundDialogProgressBar.setVisibility(View.VISIBLE);
 
