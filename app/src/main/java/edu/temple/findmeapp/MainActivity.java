@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -229,19 +230,22 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
         buttonRegisterDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editTextRegisterUsername.getText().toString().length() == 0) {
+                if (editTextRegisterUsername.getText().toString().trim().length() == 0) {
                     Toast.makeText(getApplicationContext(), "Username cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (editTextRegisterPassword.getText().toString().length() == 0) {
                     Toast.makeText(getApplicationContext(), "Password cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (editTextRegisterEmail.getText().toString().length() == 0) {
+                } else if (editTextRegisterEmail.getText().toString().trim().length() == 0) {
                     Toast.makeText(getApplicationContext(), "Email cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (editTextRegisterFirstName.getText().toString().length() == 0) {
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(editTextRegisterEmail.getText().toString().trim()).matches()) {
+                    Toast.makeText(getApplicationContext(), "Invalid email", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (editTextRegisterFirstName.getText().toString().trim().length() == 0) {
                     Toast.makeText(getApplicationContext(), "First name cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (editTextRegisterLastName.getText().toString().length() == 0) {
+                } else if (editTextRegisterLastName.getText().toString().trim().length() == 0) {
                     Toast.makeText(getApplicationContext(), "Last name cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -251,11 +255,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
 
                 dbcall = "register";
                 dbInterface.registerUser(
-                        editTextRegisterUsername.getText().toString(),
-                        editTextRegisterPassword.getText().toString(),
-                        editTextRegisterEmail.getText().toString(),
-                        editTextRegisterFirstName.getText().toString(),
-                        editTextRegisterLastName.getText().toString()
+                        editTextRegisterUsername.getText().toString().trim(),
+                        editTextRegisterPassword.getText().toString().trim(),
+                        editTextRegisterEmail.getText().toString().trim(),
+                        editTextRegisterFirstName.getText().toString().trim(),
+                        editTextRegisterLastName.getText().toString().trim()
 
                 );
             }

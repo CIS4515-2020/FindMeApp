@@ -153,13 +153,15 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
                 NdefMessage ndefMessage = ndefTag.getNdefMessage();
 
                 if( (ndefMessage == null) || confirmWrite ){
+                    confirmWrite = false;
+
                     NdefRecord uriRecord = NdefRecord.createUri(API_DOMAIN+FOUND_ACTION+"/"+itemId);
                     NdefMessage msg = new NdefMessage( new NdefRecord[]{uriRecord} );
                     ndefTag.writeNdefMessage(msg);
                     Log.d("WriteTAG", "Writing to tag successful");
                     Toast.makeText(NewItemActivity.this, "Writing to tag successful",
                             Toast.LENGTH_SHORT).show();
-                    confirmWrite = false;
+
                     dbInterface = new DatabaseInterface(NewItemActivity.this);
                     dbcallback = "addItem";
                     dbInterface.addItem(itemId, userId, itemName, itemDesc);
