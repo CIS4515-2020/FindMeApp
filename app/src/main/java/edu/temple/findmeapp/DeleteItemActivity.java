@@ -191,7 +191,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
         if(NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)){
             Tag tag = data.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             if(foregroundDispatch && mWriteNfc){
-                // This activity is in foreground dispatch and we want to write URI to Tag
+                // This activity is in foreground dispatch and we want to write to Tag
                 mWriteNfc = false;
 
                 // Call method to write tag

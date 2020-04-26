@@ -12,13 +12,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
-import android.nfc.tech.NfcA;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +32,7 @@ public class EditItemActivity extends AppCompatActivity implements
         DatabaseInterface.DbResponseListener,
         ItemListAdapter.ItemClickListener {
     private final static String TAG = "EditItemActivity ===>>>";
+    private static final String API_DOMAIN = "https://findmeapp.tech";
 
     private RecyclerView recyclerView;
     private EditText nameEditText, descEditText;
@@ -224,7 +222,7 @@ public class EditItemActivity extends AppCompatActivity implements
         }
     }
 
-    private boolean userIsOwner(int itemId){
+    private boolean checkUserIsOwner(int itemId){
         for(int i = 0; i < itemList.size(); i++){
             if(itemList.get(i).getId() == itemId){
                 return true;
@@ -239,20 +237,30 @@ public class EditItemActivity extends AppCompatActivity implements
             try {
                 ndefTag.connect();
                 NdefMessage ndefMessage = ndefTag.getNdefMessage();
-                String payload = new String(ndefMessage.getRecords()[0].getPayload());
-                Log.d("Read tag payload", payload);
-                String[] tagInfo = payload.split("/");
-                itemId = new Integer(tagInfo[tagInfo.length - 1]);
-                Log.d("Payload itemID", String.valueOf(itemId));
-                boolean isOwner = userIsOwner(itemId);
-                if(isOwner){
-                    dbcallback = "getItem";
-                    dbInterface.getItem(itemId);
-                }
-                else
-                    Toast.makeText(EditItemActivity.this,
-                            "Sorry. You are not the owner of this tag.",
+                if(ndefMessage == null){
+                    Toast.makeText(EditItemActivity.this, "Tag is empty.",
                             Toast.LENGTH_SHORT).show();
+                } else {
+                    String payload = new String(ndefMessage.getRecords()[0].getPayload());
+                    Log.d("Read tag payload", payload);
+                    if(payload.contains(API_DOMAIN)) {
+                        String[] tagInfo = payload.split("/");
+                        itemId = new Integer(tagInfo[tagInfo.length - 1]);
+                        Log.d("Payload itemID", String.valueOf(itemId));
+                        boolean isOwner = checkUserIsOwner(itemId);
+                        if (isOwner) {
+                            dbcallback = "getItem";
+                            dbInterface.getItem(itemId);
+                        } else
+                            Toast.makeText(EditItemActivity.this,
+                                    "Sorry. You are not the owner of this tag.",
+                                    Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(EditItemActivity.this, "Error. Unregistered tag.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -269,7 +277,7 @@ public class EditItemActivity extends AppCompatActivity implements
             }
         }
         else{
-            Toast.makeText(EditItemActivity.this, "Tag is blank!",
+            Toast.makeText(EditItemActivity.this, "Sorry. Tag is not NDEF formatted!",
                     Toast.LENGTH_SHORT).show();
         }
     }
