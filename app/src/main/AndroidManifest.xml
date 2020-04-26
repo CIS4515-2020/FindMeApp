@@ -34,8 +34,12 @@
         </service>
         <activity android:name=".DeleteItemActivity" />
         <activity android:name=".ItemDisplayActivity" />
-        <activity android:name=".EditItemActivity" />
-        <activity android:name=".NewItemActivity" />
+        <activity android:name=".EditItemActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity android:name=".NewItemActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
