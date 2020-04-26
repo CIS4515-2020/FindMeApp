@@ -20,8 +20,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +36,7 @@ public class EditItemActivity extends AppCompatActivity implements
     private static final String API_DOMAIN = "https://findmeapp.tech";
 
     private RecyclerView recyclerView;
-    private EditText nameEditText, descEditText;
+    private TextInputLayout nameEditText, descEditText;
     private CheckBox lostCheckBox;
     private boolean mStartUp = true;
 
@@ -44,6 +45,7 @@ public class EditItemActivity extends AppCompatActivity implements
     private ArrayList<Item> itemList = new ArrayList<>();
     private Item mItem;
     private int itemId;
+    private String editItemName, editItemDesc;
 
     private DatabaseInterface dbInterface;
     private int userId;
@@ -87,10 +89,12 @@ public class EditItemActivity extends AppCompatActivity implements
         findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( (!mItem.getName().equals(nameEditText.getText().toString().trim()))
-                    || (!mItem.getDescription().equals(descEditText.getText().toString().trim()))
+                if ( (!mItem.getName().equals(nameEditText.getEditText().getText().toString().trim()))
+                    || (!mItem.getDescription().equals(descEditText.getEditText().getText().toString().trim()))
                     || (mItem.isLost() != lostCheckBox.isChecked())) {
-                    EditItemActivity.this.showChangesDialog();
+                    if(checkItemName() & checkItemDesc()) {
+                        EditItemActivity.this.showChangesDialog();
+                    }
                 }
             }
         });
@@ -106,13 +110,47 @@ public class EditItemActivity extends AppCompatActivity implements
 
     private void setFocusable(boolean isStartup){
         if(isStartup){
-            nameEditText.setFocusable(false);
-            descEditText.setFocusable(false);
+            nameEditText.getEditText().setFocusable(false);
+            descEditText.getEditText().setFocusable(false);
         }
         else{
-            nameEditText.setFocusableInTouchMode(true);
-            descEditText.setFocusableInTouchMode(true);
+            nameEditText.getEditText().setFocusableInTouchMode(true);
+            descEditText.getEditText().setFocusableInTouchMode(true);
         }
+    }
+
+    private boolean checkItemName(){
+        editItemName = nameEditText.getEditText().getText().toString();
+        if ( editItemName.isEmpty() || (editItemName.trim().length() == 0) ) {
+            nameEditText.setError("Item description cannot be empty");
+            return false;
+        }
+        else if ( editItemName.length() > nameEditText.getCounterMaxLength() ) {
+            nameEditText.setError("Item description is too long");
+            return false;
+        }
+        else if ( editItemName.length() <= nameEditText.getCounterMaxLength() && (editItemName.trim().length() > 0) ) {
+            nameEditText.setError(null);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkItemDesc(){
+        editItemDesc = descEditText.getEditText().getText().toString();
+        if ( editItemDesc.isEmpty() || (editItemDesc.trim().length() == 0) ) {
+            descEditText.setError("Item description cannot be empty");
+            return false;
+        }
+        else if ( editItemDesc.length() > descEditText.getCounterMaxLength() ) {
+            descEditText.setError("Item description is too long");
+            return false;
+        }
+        else if ( editItemDesc.length() <= descEditText.getCounterMaxLength() && (editItemDesc.trim().length() > 0) ) {
+            descEditText.setError(null);
+            return true;
+        }
+        return false;
     }
 
     private void showChangesDialog() {
@@ -123,8 +161,8 @@ public class EditItemActivity extends AppCompatActivity implements
                 "Description: " + mItem.getDescription()+"\n" +
                 "Lost: " + mItem.isLost() + "\n \n" +
                 "After save: \n" +
-                "Name: " + nameEditText.getText().toString()+"\n"+
-                "Description: "+ descEditText.getText().toString()+"\n"+
+                "Name: " + editItemName+"\n"+
+                "Description: "+ editItemDesc+"\n"+
                 "Lost: " + lostCheckBox.isChecked();
         builder.setTitle(title)
                 .setMessage(message)
@@ -132,8 +170,8 @@ public class EditItemActivity extends AppCompatActivity implements
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mItem.setName(nameEditText.getText().toString());
-                        mItem.setDescription(descEditText.getText().toString());
+                        mItem.setName(editItemName);
+                        mItem.setDescription(editItemDesc);
                         int isLostInt = (lostCheckBox.isChecked()) ? 1 : 0;
                         mItem.setLost(isLostInt);
                         dbcallback = "editItem";
@@ -317,8 +355,8 @@ public class EditItemActivity extends AppCompatActivity implements
     @Override
     public void onItemClick(Item item) {
         mItem = item.clone();
-        nameEditText.setText(item.getName());
-        descEditText.setText(item.getDescription());
+        nameEditText.getEditText().setText(item.getName());
+        descEditText.getEditText().setText(item.getDescription());
         lostCheckBox.setChecked(item.isLost());
         mStartUp = false;
         setFocusable(mStartUp);
