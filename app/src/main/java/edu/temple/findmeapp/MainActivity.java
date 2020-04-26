@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
             getSupportActionBar().setTitle("Find Me - " +username);
             loginRegisterButtonFrame.setVisibility(View.GONE);
             buttonLogout.setVisibility(View.VISIBLE);
-            subscribeToNotifications(true); // TODO: replace with user id
+            subscribeToNotifications(false);
         }
 
         buttonNewItemActivity.setOnClickListener(new View.OnClickListener() {
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                unsubscribeToNotifications(true);
+                unsubscribeToNotifications(false);
                 SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(SHARED_PREFS_USERNAME, "");
@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                 editor.commit();
                 getSupportActionBar().setTitle("Find Me - " + user.getUsername());
                 dialogLogin.cancel();
-                subscribeToNotifications(true);
+                subscribeToNotifications(false);
                 loginRegisterButtonFrame.setVisibility(View.GONE);
                 buttonLogout.setVisibility(View.VISIBLE);
             } else if (dbcall.equals("register")){
@@ -350,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInterface
                 editor.commit();
                 getSupportActionBar().setTitle("Find Me - " + user.getUsername());
                 dialogRegister.cancel();
-                subscribeToNotifications(true);
+                subscribeToNotifications(false);
                 loginRegisterButtonFrame.setVisibility(View.GONE);
                 buttonLogout.setVisibility(View.VISIBLE);
             }
