@@ -30,15 +30,21 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/editNameET"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.75"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:paddingLeft="5dp"
-            android:paddingTop="10dp" />
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="64"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -50,15 +56,21 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/editDescET"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.75"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:paddingLeft="5dp"
-            android:paddingTop="10dp" />
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="255"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
