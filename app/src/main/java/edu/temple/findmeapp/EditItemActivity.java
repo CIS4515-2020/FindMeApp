@@ -275,7 +275,7 @@ public class EditItemActivity extends AppCompatActivity implements
             try {
                 ndefTag.connect();
                 NdefMessage ndefMessage = ndefTag.getNdefMessage();
-                if(ndefMessage == null){
+                if(ndefMessage == null | ndefMessage.getRecords()[0].getPayload().length == 0){
                     Toast.makeText(EditItemActivity.this, "Tag is empty.",
                             Toast.LENGTH_SHORT).show();
                 } else {

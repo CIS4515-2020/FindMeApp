@@ -198,7 +198,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
 
                 NdefMessage ndefMessage = ndefTag.getNdefMessage();
 
-                if( (ndefMessage == null) || confirmWrite ){
+                if( (ndefMessage == null | ndefMessage.getRecords()[0].getPayload().length == 0) || confirmWrite ){
                     confirmWrite = false;
 
                     NdefRecord uriRecord = NdefRecord.createUri(API_DOMAIN+FOUND_ACTION+"/"+itemId);
