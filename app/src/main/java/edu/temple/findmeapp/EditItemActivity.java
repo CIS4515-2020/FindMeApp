@@ -275,10 +275,14 @@ public class EditItemActivity extends AppCompatActivity implements
             try {
                 ndefTag.connect();
                 NdefMessage ndefMessage = ndefTag.getNdefMessage();
-                if(ndefMessage == null | ndefMessage.getRecords()[0].getPayload().length == 0){
+                if(ndefMessage == null){
                     Toast.makeText(EditItemActivity.this, "Tag is empty.",
                             Toast.LENGTH_SHORT).show();
-                } else {
+                } else if ( ndefMessage.getRecords()[0].getPayload().length == 0 ){
+                    Toast.makeText(EditItemActivity.this, "Tag is empty.",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else {
                     String payload = new String(ndefMessage.getRecords()[0].getPayload());
                     Log.d("Read tag payload", payload);
                     if(payload.contains("findmeapp.tech")) {
