@@ -18,7 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
@@ -31,57 +30,14 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class LoginRegisterFailCase {
+public class RegisterFailCase {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void loginRegisterFailCase() {
+    public void registerFailCase() {
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.button_login), withText("Login"),
-                        childAtPosition(
-                                allOf(withId(R.id.login_register_button_frame),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        appCompatButton.perform(click());
-
-        ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.loginDialogUsername),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText.perform(replaceText("victor101"), closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.loginDialogPassword),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText2.perform(replaceText("vicfor101"), closeSoftKeyboard());
-
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.loginDialogButton), withText("Login"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatButton2.perform(click());
-
-        pressBack();
-
-        ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.button_register), withText("Register"),
                         childAtPosition(
                                 allOf(withId(R.id.login_register_button_frame),
@@ -90,71 +46,9 @@ public class LoginRegisterFailCase {
                                                 0)),
                                 1),
                         isDisplayed()));
-        appCompatButton3.perform(click());
+        appCompatButton.perform(click());
 
-        ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.registerDialogUsername),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText3.perform(replaceText("vi"), closeSoftKeyboard());
-
-        pressBack();
-
-        ViewInteraction appCompatEditText4 = onView(
-                allOf(withId(R.id.registerDialogUsername), withText("vi"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText4.perform(replaceText("victor"));
-
-        ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.registerDialogUsername), withText("victor"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText5.perform(closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText6 = onView(
-                allOf(withId(R.id.registerDialogUsername), withText("victor"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText6.perform(click());
-
-        ViewInteraction appCompatEditText7 = onView(
-                allOf(withId(R.id.registerDialogUsername), withText("victor"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText7.perform(replaceText("victor101"));
-
-        ViewInteraction appCompatEditText8 = onView(
-                allOf(withId(R.id.registerDialogUsername), withText("victor101"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText8.perform(closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText9 = onView(
+        ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.registerDialogEmail),
                         childAtPosition(
                                 childAtPosition(
@@ -162,9 +56,19 @@ public class LoginRegisterFailCase {
                                         0),
                                 2),
                         isDisplayed()));
-        appCompatEditText9.perform(replaceText("victor101@"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("jrbd"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText10 = onView(
+        ViewInteraction appCompatEditText2 = onView(
+                allOf(withId(R.id.registerDialogUsername),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                1),
+                        isDisplayed()));
+        appCompatEditText2.perform(replaceText("bdb"), closeSoftKeyboard());
+
+        ViewInteraction appCompatEditText3 = onView(
                 allOf(withId(R.id.registerDialogPassword),
                         childAtPosition(
                                 childAtPosition(
@@ -172,39 +76,19 @@ public class LoginRegisterFailCase {
                                         0),
                                 3),
                         isDisplayed()));
-        appCompatEditText10.perform(replaceText("victor"), closeSoftKeyboard());
+        appCompatEditText3.perform(replaceText("hdbdb"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText11 = onView(
-                allOf(withId(R.id.registerDialogPassword), withText("victor"),
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.registerDialogButton), withText("Register"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.custom),
                                         0),
-                                3),
+                                6),
                         isDisplayed()));
-        appCompatEditText11.perform(click());
+        appCompatButton2.perform(click());
 
-        ViewInteraction appCompatEditText12 = onView(
-                allOf(withId(R.id.registerDialogPassword), withText("victor"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatEditText12.perform(replaceText("victor101"));
-
-        ViewInteraction appCompatEditText13 = onView(
-                allOf(withId(R.id.registerDialogPassword), withText("victor101"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.custom),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatEditText13.perform(closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText14 = onView(
+        ViewInteraction appCompatEditText4 = onView(
                 allOf(withId(R.id.registerDialogFirstName),
                         childAtPosition(
                                 childAtPosition(
@@ -212,9 +96,9 @@ public class LoginRegisterFailCase {
                                         0),
                                 4),
                         isDisplayed()));
-        appCompatEditText14.perform(replaceText("Vic"), closeSoftKeyboard());
+        appCompatEditText4.perform(replaceText("jbm"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText15 = onView(
+        ViewInteraction appCompatEditText5 = onView(
                 allOf(withId(R.id.registerDialogLastName),
                         childAtPosition(
                                 childAtPosition(
@@ -222,9 +106,77 @@ public class LoginRegisterFailCase {
                                         0),
                                 5),
                         isDisplayed()));
-        appCompatEditText15.perform(replaceText("Tor"), closeSoftKeyboard());
+        appCompatEditText5.perform(replaceText("hnn"), closeSoftKeyboard());
 
-        pressBack();
+        ViewInteraction appCompatEditText6 = onView(
+                allOf(withId(R.id.registerDialogEmail), withText("jrbd"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatEditText6.perform(replaceText("jrbd@.com"));
+
+        ViewInteraction appCompatEditText7 = onView(
+                allOf(withId(R.id.registerDialogEmail), withText("jrbd@.com"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatEditText7.perform(closeSoftKeyboard());
+
+        ViewInteraction appCompatButton3 = onView(
+                allOf(withId(R.id.registerDialogButton), withText("Register"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                6),
+                        isDisplayed()));
+        appCompatButton3.perform(click());
+
+        ViewInteraction appCompatEditText8 = onView(
+                allOf(withId(R.id.registerDialogLastName), withText("hnn"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatEditText8.perform(replaceText(""));
+
+        ViewInteraction appCompatEditText9 = onView(
+                allOf(withId(R.id.registerDialogLastName),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatEditText9.perform(closeSoftKeyboard());
+
+        ViewInteraction appCompatEditText10 = onView(
+                allOf(withId(R.id.registerDialogEmail), withText("jrbd@.com"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatEditText10.perform(replaceText("jrbd@dhbfn.com"));
+
+        ViewInteraction appCompatEditText11 = onView(
+                allOf(withId(R.id.registerDialogEmail), withText("jrbd@dhbfn.com"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatEditText11.perform(closeSoftKeyboard());
 
         ViewInteraction appCompatButton4 = onView(
                 allOf(withId(R.id.registerDialogButton), withText("Register"),
