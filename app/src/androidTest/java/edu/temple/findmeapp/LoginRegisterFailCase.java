@@ -81,8 +81,6 @@ public class LoginRegisterFailCase {
 
         pressBack();
 
-        pressBack();
-
         ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.button_register), withText("Register"),
                         childAtPosition(

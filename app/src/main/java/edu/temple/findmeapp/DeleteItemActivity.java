@@ -212,6 +212,8 @@ public class DeleteItemActivity extends AppCompatActivity implements
                 ndefTag.writeNdefMessage(new NdefMessage(new NdefRecord(NdefRecord.TNF_EMPTY,
                         null, null, null)));
                 Log.d("DeleteTag", "Delete successful");
+                Toast.makeText(DeleteItemActivity.this, "Tag erased successfully",
+                        Toast.LENGTH_SHORT).show();
             }
             catch(Exception e){
                 e.printStackTrace();

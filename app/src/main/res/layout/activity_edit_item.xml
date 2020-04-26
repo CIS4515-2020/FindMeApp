@@ -8,74 +8,89 @@
     android:orientation="vertical"
     tools:context=".EditItemActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reyclerViewEdit"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3" />
+        android:layout_weight="0.9"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingLeft="5dp"
-        android:paddingTop="20dp"
-        android:paddingRight="5dp"
-        android:text="Item Name" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reyclerViewEdit"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2.5" />
 
-    <EditText
-        android:id="@+id/editNameET"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:paddingLeft="5dp"
-        android:paddingTop="20dp"
-        android:paddingRight="5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:text="Item Name"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingLeft="5dp"
-        android:paddingTop="20dp"
-        android:paddingRight="5dp"
-        android:text="Item Description" />
+        <EditText
+            android:id="@+id/editNameET"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.75"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp" />
 
-    <EditText
-        android:id="@+id/editDescET"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:paddingLeft="5dp"
-        android:paddingTop="20dp"
-        android:paddingRight="5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:text="Item Description"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingLeft="5dp"
-        android:paddingTop="20dp"
-        android:paddingRight="5dp"
-        android:text="Lost?" />
+        <EditText
+            android:id="@+id/editDescET"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.75"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp" />
 
-    <CheckBox
-        android:id="@+id/lostCheckBox"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingLeft="5dp"
-        android:paddingTop="20dp"
-        android:paddingRight="5dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.75"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1"
+                android:gravity="center|center_vertical"
+                android:paddingLeft="5dp"
+                android:text="Lost?"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <CheckBox
+                android:id="@+id/lostCheckBox"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="0.1"
         android:orientation="horizontal">
 
         <Button
@@ -83,8 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:paddingTop="20dp"
-            android:text="Scan" />
+            android:text="Scan Tag" />
 
         <Button
             android:id="@+id/saveButton"
@@ -92,7 +106,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="0.5"
-            android:paddingTop="20dp"
             android:text="Save" />
 
     </LinearLayout>

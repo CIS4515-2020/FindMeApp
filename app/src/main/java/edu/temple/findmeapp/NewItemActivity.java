@@ -22,6 +22,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.w3c.dom.Text;
@@ -45,7 +47,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
     boolean mWriteNfc = false, confirmWrite = false;
 
     Button addBtn;
-    EditText editTextName, editTextDesc;
+    TextInputLayout editTextName, editTextDesc;
     private String itemName, itemDesc;
     private String payload;
 
@@ -71,17 +73,27 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemName = editTextName.getText().toString();
-                itemDesc = editTextDesc.getText().toString();
-                if ( itemName.isEmpty() || (itemName.trim().length() == 0) ){
-                    Toast.makeText(NewItemActivity.this,
-                            "Item name cannot be empty", Toast.LENGTH_SHORT).show();
-                }
-                else if ( itemDesc.isEmpty() || (itemDesc.trim().length() == 0) ){
-                    Toast.makeText(NewItemActivity.this,
-                            "Item description cannot be empty", Toast.LENGTH_SHORT).show();
-                }
-                else{
+//                itemName = editTextName.getEditText().getText().toString();
+//                itemDesc = editTextDesc.getEditText().getText().toString();
+//                if ( itemName.isEmpty() || (itemName.trim().length() == 0) ) {
+//                    editTextName.setError("Item name cannot be empty");
+//                }
+//                else if( itemName.length() > editTextName.getCounterMaxLength() ) {
+//                    editTextName.setError("Item name is too long");
+//                }
+//                else if ( itemName.length() < editTextName.getCounterMaxLength() && (itemName.trim().length() > 0) ) {
+//                    editTextName.setError(null);
+//                }
+//                else if ( itemDesc.isEmpty() || (itemDesc.trim().length() == 0) ) {
+//                    editTextDesc.setError("Item description cannot be empty");
+//                }
+//                else if ( itemDesc.length() > editTextDesc.getCounterMaxLength() ) {
+//                    editTextDesc.setError("Item description is too long");
+//                }
+//                else if ( itemName.length() < editTextName.getCounterMaxLength() && (itemName.trim().length() > 0) ) {
+//                    editTextName.setError(null);
+//                }
+                if(checkItemName() & checkItemDesc()) {
                     mWriteNfc = true;
 
                     dbcallback = "getNewItemId";
@@ -91,6 +103,40 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
                 }
             }
         });
+    }
+
+    private boolean checkItemName(){
+        itemName = editTextName.getEditText().getText().toString();
+        if ( itemName.isEmpty() || (itemName.trim().length() == 0) ) {
+            editTextName.setError("Item description cannot be empty");
+            return false;
+        }
+        else if ( itemName.length() > editTextName.getCounterMaxLength() ) {
+            editTextName.setError("Item description is too long");
+            return false;
+        }
+        else if ( itemName.length() <= editTextName.getCounterMaxLength() && (itemName.trim().length() > 0) ) {
+            editTextName.setError(null);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkItemDesc(){
+        itemDesc = editTextDesc.getEditText().getText().toString();
+        if ( itemDesc.isEmpty() || (itemDesc.trim().length() == 0) ) {
+            editTextDesc.setError("Item description cannot be empty");
+            return false;
+        }
+        else if ( itemDesc.length() > editTextDesc.getCounterMaxLength() ) {
+            editTextDesc.setError("Item description is too long");
+            return false;
+        }
+        else if ( itemDesc.length() <= editTextDesc.getCounterMaxLength() && (itemDesc.trim().length() > 0) ) {
+            editTextDesc.setError(null);
+            return true;
+        }
+        return false;
     }
 
     // Ensuring this app is set on foreground, needed for NFC tag connection
@@ -262,8 +308,8 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
         else if(dbcallback.equals("addItem")){
             Log.d("Add item data response", data.toString());
             Toast.makeText(NewItemActivity.this, "Item added to DB!", Toast.LENGTH_SHORT).show();
-            editTextName.getText().clear();
-            editTextDesc.getText().clear();
+            editTextName.getEditText().getText().clear();
+            editTextDesc.getEditText().getText().clear();
         }
         else{
             Log.d("Response NOT FOUND","dbcallback is currently either null or set to" +
