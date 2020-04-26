@@ -281,7 +281,7 @@ public class EditItemActivity extends AppCompatActivity implements
                 } else {
                     String payload = new String(ndefMessage.getRecords()[0].getPayload());
                     Log.d("Read tag payload", payload);
-                    if(payload.contains(API_DOMAIN)) {
+                    if(payload.contains("findmeapp.tech")) {
                         String[] tagInfo = payload.split("/");
                         itemId = new Integer(tagInfo[tagInfo.length - 1]);
                         Log.d("Payload itemID", String.valueOf(itemId));
