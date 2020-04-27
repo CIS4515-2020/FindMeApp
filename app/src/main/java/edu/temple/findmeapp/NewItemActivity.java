@@ -73,26 +73,6 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                itemName = editTextName.getEditText().getText().toString();
-//                itemDesc = editTextDesc.getEditText().getText().toString();
-//                if ( itemName.isEmpty() || (itemName.trim().length() == 0) ) {
-//                    editTextName.setError("Item name cannot be empty");
-//                }
-//                else if( itemName.length() > editTextName.getCounterMaxLength() ) {
-//                    editTextName.setError("Item name is too long");
-//                }
-//                else if ( itemName.length() < editTextName.getCounterMaxLength() && (itemName.trim().length() > 0) ) {
-//                    editTextName.setError(null);
-//                }
-//                else if ( itemDesc.isEmpty() || (itemDesc.trim().length() == 0) ) {
-//                    editTextDesc.setError("Item description cannot be empty");
-//                }
-//                else if ( itemDesc.length() > editTextDesc.getCounterMaxLength() ) {
-//                    editTextDesc.setError("Item description is too long");
-//                }
-//                else if ( itemName.length() < editTextName.getCounterMaxLength() && (itemName.trim().length() > 0) ) {
-//                    editTextName.setError(null);
-//                }
                 if(checkItemName() & checkItemDesc()) {
                     mWriteNfc = true;
 
