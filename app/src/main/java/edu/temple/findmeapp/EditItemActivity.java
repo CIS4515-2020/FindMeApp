@@ -73,6 +73,7 @@ public class EditItemActivity extends AppCompatActivity implements
         descEditText = findViewById(R.id.editDescET);
         lostCheckBox = findViewById(R.id.lostCheckBox);
 
+        // Checking if user is logged in.
         SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
         userId = sharedPreferences.getInt(MainActivity.SHARED_PREFS_USERID, 0);
         if (userId == 0) {
@@ -89,9 +90,11 @@ public class EditItemActivity extends AppCompatActivity implements
         findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Check if name and descriptions are different from saved DB record
                 if ( (!mItem.getName().equals(nameEditText.getEditText().getText().toString().trim()))
                     || (!mItem.getDescription().equals(descEditText.getEditText().getText().toString().trim()))
                     || (mItem.isLost() != lostCheckBox.isChecked())) {
+                    // Check item name and description are not blank or too long
                     if(checkItemName() & checkItemDesc()) {
                         EditItemActivity.this.showChangesDialog();
                     }
@@ -99,6 +102,7 @@ public class EditItemActivity extends AppCompatActivity implements
             }
         });
 
+        // Reading tag to update UI automatically with info from DB if user is tag owner
         findViewById(R.id.editScanBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,6 +112,7 @@ public class EditItemActivity extends AppCompatActivity implements
         });
     }
 
+    // If startup, editText should be blank and "unclickable"
     private void setFocusable(boolean isStartup){
         if(isStartup){
             nameEditText.getEditText().setFocusable(false);
@@ -153,6 +158,7 @@ public class EditItemActivity extends AppCompatActivity implements
         return false;
     }
 
+    // Dialog displaying original and edits
     private void showChangesDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(EditItemActivity.this);
         String title = "Save changes?";
@@ -187,6 +193,7 @@ public class EditItemActivity extends AppCompatActivity implements
         builder.create().show();
     }
 
+    // Dialog displayed asking user to scan NFC tag
     private void showNfcDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(EditItemActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_scantag, null);
@@ -275,21 +282,26 @@ public class EditItemActivity extends AppCompatActivity implements
             try {
                 ndefTag.connect();
                 NdefMessage ndefMessage = ndefTag.getNdefMessage();
+                // Checking if tag is unused
                 if(ndefMessage == null){
                     Toast.makeText(EditItemActivity.this, "Tag is empty.",
                             Toast.LENGTH_SHORT).show();
-                } else if ( ndefMessage.getRecords()[0].getPayload().length == 0 ){
+                }
+                // Checking if tag was used but now empty
+                else if ( ndefMessage.getRecords()[0].getPayload().length == 0 ){
                     Toast.makeText(EditItemActivity.this, "Tag is empty.",
                             Toast.LENGTH_SHORT).show();
                 }
                 else {
                     String payload = new String(ndefMessage.getRecords()[0].getPayload());
                     Log.d("Read tag payload", payload);
+                    // Check if tag is saved onto database at all
                     if(payload.contains("findmeapp.tech")) {
                         String[] tagInfo = payload.split("/");
                         itemId = new Integer(tagInfo[tagInfo.length - 1]);
                         Log.d("Payload itemID", String.valueOf(itemId));
                         boolean isOwner = checkUserIsOwner(itemId);
+                        // Checking user is owner of tag
                         if (isOwner) {
                             dbcallback = "getItem";
                             dbInterface.getItem(itemId);

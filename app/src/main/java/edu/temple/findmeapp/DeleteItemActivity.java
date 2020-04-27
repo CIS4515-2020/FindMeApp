@@ -131,6 +131,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
         confirmDeleteDialog.show();
     }
 
+    // Dialog displayed asking user to scan NFC tag
     private void showNfcDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(DeleteItemActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_scantag, null);
@@ -202,6 +203,7 @@ public class DeleteItemActivity extends AppCompatActivity implements
         }
     }
 
+    // Writing empty record to tag
     private void writeTag(Tag tag){
         Ndef ndefTag = Ndef.get(tag);
         if(ndefTag != null){

@@ -58,6 +58,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
         setContentView(R.layout.activity_new_item);
         getSupportActionBar().setTitle("New Item");
 
+        // Checking if user is logged in.
         userId = getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE)
                 .getInt(MainActivity.SHARED_PREFS_USERID, 0);
         if (userId == 0) {
@@ -73,6 +74,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Check item name and description are not blank or too long
                 if(checkItemName() & checkItemDesc()) {
                     mWriteNfc = true;
 
@@ -178,6 +180,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
 
                 NdefMessage ndefMessage = ndefTag.getNdefMessage();
 
+                // If ndeffMessage is null, equates to blank unused tag.
                 if( ndefMessage == null || confirmWrite ){
                     confirmWrite = false;
 
@@ -192,6 +195,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
                     dbcallback = "addItem";
                     dbInterface.addItem(itemId, userId, itemName, itemDesc);
                 }
+                // If ndefMessage isn't blank, checking for empty record (aka blank tag).
                 else if ( (ndefMessage.getRecords()[0].getPayload().length == 0) || confirmWrite ){
                     confirmWrite = false;
 
@@ -206,6 +210,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
                     dbcallback = "addItem";
                     dbInterface.addItem(itemId, userId, itemName, itemDesc);
                 }
+                // Otherwise show what is written on the tag
                 else{
                     payload = new String(ndefMessage.getRecords()[0].getPayload());
                     showConfirmDialog();
@@ -234,6 +239,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
         }
     }
 
+    // Dialog displayed when asking user to scan NFC tag
     private void showWriteDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(NewItemActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_scantag, null);
@@ -260,6 +266,7 @@ public class NewItemActivity extends AppCompatActivity implements DatabaseInterf
 
     }
 
+    // Dialog displayed when confirming user to overwrite tag
     private void showConfirmDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(NewItemActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_confirm_delete, null);
